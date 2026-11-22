@@ -14,13 +14,8 @@ function Free-Ports {
 }
 
 function Test-Port($port) {
-  try {
-    $c = New-Object Net.Sockets.TcpClient
-    $r = $c.BeginConnect('127.0.0.1', $port, $null, $null)
-    $ok = $r.AsyncWaitHandle.WaitOne(500) -and $c.Connected
-    $c.Close()
-    return $ok
-  } catch { return $false }
+  $l = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue
+  return [bool]$l
 }
 
 function Wait-Port($port, $label, $seconds) {
