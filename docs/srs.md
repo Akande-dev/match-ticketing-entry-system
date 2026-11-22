@@ -41,7 +41,7 @@
 | FR-20 | Audit log of important actions | Must | Done |
 | FR-21 | Email notifications | Should | Not built |
 | FR-22 | User management screen | Should | Partial (role and disable functions, no screen) |
-| FR-23 | Ticket transfer (change request CR-01) | Should | Specified, not built |
+| FR-23 | Ticket transfer (change request CR-01): one transfer per ticket to a registered user, up to 2 hours before kick-off | Should | Done |
 
 ### 3.2 Non-functional requirements
 | ID | Category | Requirement | Evidence |

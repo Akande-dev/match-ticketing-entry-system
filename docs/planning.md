@@ -33,7 +33,7 @@
 | B-18 | Offline scanning | 8 | Should | Descoped |
 | B-15 | Email | 5 | Should | Not built |
 | B-22 | User management screen | 5 | Should | Not built |
-| CR-01 | Ticket transfer | 14 | Should | Specified |
+| CR-01 | Ticket transfer | 14 | Should | Done |
 Update the Status column with your real dates.
 
 ## 13-week plan
