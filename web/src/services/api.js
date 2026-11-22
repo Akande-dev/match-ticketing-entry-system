@@ -14,3 +14,4 @@ export const decideRefund = call('decideRefund');
 export const saveMatch = call('saveMatch');
 export const publishMatch = call('publishMatch');
 export const cancelMatch = call('cancelMatch');
+export const transferTicket = call('transferTicket');

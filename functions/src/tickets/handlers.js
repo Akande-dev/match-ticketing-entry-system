@@ -2,6 +2,8 @@ const { FieldValue } = require('firebase-admin/firestore');
 const { callable } = require('../shared/callable');
 const { DomainError } = require('../shared/errors');
 const { buildTicketValidator } = require('./composition');
+const { TicketSigner } = require('./TicketSigner');
+const { transferTicketCore } = require('./transferService');
 
 const toMillis = (v) => (v?.toMillis ? v.toMillis() : v instanceof Date ? v.getTime() : null);
 
@@ -21,3 +23,9 @@ exports.validateTicket = callable(['steward', 'admin'], async ({ auth, data, db 
   }
   return { ...outcome, firstUsedAt: toMillis(outcome.firstUsedAt) };
 });
+
+exports.transferTicket = callable(null,
+  ({ auth, data, db }) => transferTicketCore(db, new TicketSigner(process.env.TICKET_HMAC_SECRET), {
+    uid: auth.uid, ticketId: data.ticketId, recipientEmail: data.recipientEmail,
+  }),
+  { rateLimit: { action: 'transfer', limit: 5, windowMs: 60_000 } });

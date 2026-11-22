@@ -44,3 +44,9 @@ Browser (untrusted) -> Cloud Functions and Firestore rules (trusted) -> payment 
 ## CI pipeline
 .github/workflows/ci.yml runs lint and unit tests, builds the web app, and runs the emulator-based integration tests on every push and pull request.
 Deployment: not done. The system runs on the local emulators. A Firebase test project needs the paid Blaze plan for Cloud Functions; document this honestly in the final report.
+
+## Additions from CR-01 (ticket transfer)
+| ID | Type | Threat | Mitigation | Residual |
+|---|---|---|---|---|
+| TM-29 | Information disclosure | The transfer form reveals which emails have accounts | One generic message for unknown and disabled accounts; rate limit of 5 per minute; audit entry | Low |
+| TM-30 | Tampering / fraud | Transfers used for touting or laundering tickets | One transfer per ticket; recipient must be registered; closes 2 hours before kick-off; audit trail | Private resale by selling an account is accepted |

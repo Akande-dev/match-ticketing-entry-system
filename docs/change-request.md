@@ -8,7 +8,7 @@
 | Description | A ticket holder can transfer a valid, unused ticket once to another registered user by email. The recipient gets a new ticket with a new QR code. The old QR stops working |
 | New requirement | FR-23 |
 | Priority | Should |
-| Decision | Approved, implementation pending |
+| Decision | Approved and implemented |
 
 ## Impact analysis
 | Area | Impact |
@@ -26,3 +26,12 @@
 | Alternatives | Do nothing (more refunds); transfer by link (higher fraud risk); chosen: transfer to a registered account |
 
 Closure note (fill in after implementation): actual effort, defects found, documents updated.
+
+## Closure note (22 November 2026)
+Implemented on branch feature/CR-01-ticket-transfer and merged with tag v0.3.0.
+- Code: functions/src/tickets/transferLogic.js, transferService.js, transferTicket function; My tickets screen.
+- Tests: 5 unit tests (UT-TRF-01..05) and 7 integration tests (IT-TRF-01..07), including that the old QR is refused at the gate and that the new owner can be refunded.
+- Existing behaviour: the gate validation rules already refuse any status except Valid, so no change to validation code was needed (confirmed by IT-TRF-02).
+- Documents updated: SRS (FR-23 done), planning, user manual, security (TM-29, TM-30).
+- Actual effort: [FILL IN hours] against an estimate of about 14 story points (about 28 hours).
+- Defects found: [FILL IN, or none].

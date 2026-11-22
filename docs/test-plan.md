@@ -53,3 +53,16 @@ Run `npm --prefix functions test -- --coverage` and paste the summary here. Hand
 | Runtime | Node 26, Java 21 (Temurin) |
 | Backend | Firebase Emulator Suite (Auth, Firestore, Functions), project id demo-mtses |
 | Note | Camera scanning in Brave needs camera permission for localhost. Manual entry was used for the recorded scans |
+
+## 8. CR-01 tests
+| ID | Scenario | Level |
+|---|---|---|
+| UT-TRF-01..05 | Eligibility: valid ticket, 2-hour boundary, used/cancelled/already transferred, open refund, match not on sale | Unit |
+| IT-TRF-01 | Transfer issues a new valid ticket with a verifiable QR and retires the old one | Integration |
+| IT-TRF-02 | Old QR refused at the gate; new QR admitted once | Integration |
+| IT-TRF-03 | Only the owner can transfer; not to themselves | Integration |
+| IT-TRF-04 | Unknown and disabled recipients get the same generic message | Integration |
+| IT-TRF-05 | A ticket cannot be transferred twice | Integration |
+| IT-TRF-06 | Open refund or the 2-hour cutoff blocks transfer | Integration |
+| IT-TRF-07 | New owner can be refunded and the seat is freed | Integration |
+| ST-08 | In the browser: transfer to a second account, old QR refused, new QR valid | System (manual) |

@@ -22,6 +22,12 @@ Common messages: "Some seats were just taken" means choose other seats; "You alr
 2. Matches: create a draft (stadium, teams, kick-off in the future, a price for every seat category), save it, then Publish. Published matches cannot be edited. Cancel a match to let fans claim refunds.
 3. Refunds: approve or reject requests. Approving cancels the ticket and frees the seat. Paying the money back is currently done manually.
 
+## Transferring a ticket (fans)
+1. Open My tickets and press "Transfer to a friend" on a valid ticket.
+2. Enter your friend's email. They must already have an account.
+3. Press "Send ticket". The ticket moves to your friend with a new QR code, and your copy stops working.
+Rules: one transfer per ticket; not possible once a refund is requested; closes 2 hours before kick-off; used or cancelled tickets cannot be transferred. If the email has no active account, you see a general message that does not say whether the account exists.
+
 ## Administrators
 Audit log lists recent actions. Roles are assigned with `node functions/scripts/user-tools.js admin <email>` on the emulator; users must log out and in again to see the change.
 
