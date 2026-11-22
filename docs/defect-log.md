@@ -13,3 +13,5 @@ Severity: S1 critical, S2 major, S3 moderate, S4 minor. Only defects that really
 | DEF-007 | A repeat scan of the same QR within 3 seconds is ignored, so the previous result stays on screen | Exploratory | S3 | Deliberate debounce | Show a "duplicate within 3 seconds" notice | Open |
 
 Metrics to report: defects by severity, open versus closed, defect density (defects per KLOC, see reports/metrics.md).
+
+| DEF-008 | Integration test IT-RES-01 failed with a 5-second timeout | Running `npm run test:int` on 22 Nov 2026 | S4 | Default Jest timeout too short for 10 concurrent transactions against a freshly started emulator; the other 18 integration tests passed, including all CR-01 transfer tests | Set testTimeout to 30000 in jest.int.config.js | Closed after re-run |
