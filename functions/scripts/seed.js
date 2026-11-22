@@ -3,10 +3,10 @@
 const remote = process.argv.includes('--remote');
 if (!remote) process.env.FIRESTORE_EMULATOR_HOST ||= '127.0.0.1:8080';
 
-const admin = require('firebase-admin');
-admin.initializeApp({ projectId: process.env.GCLOUD_PROJECT || 'demo-mtses' });
-const { Timestamp } = require('firebase-admin/firestore');
-const db = admin.firestore();
+const { initializeApp } = require('firebase-admin/app');
+initializeApp({ projectId: process.env.GCLOUD_PROJECT || 'demo-mtses' });
+const { getFirestore, Timestamp } = require('firebase-admin/firestore');
+const db = getFirestore();
 
 const STADIUM_ID = 'stadium-main';
 const SECTIONS = [

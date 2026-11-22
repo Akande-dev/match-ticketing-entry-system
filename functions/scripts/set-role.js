@@ -4,8 +4,11 @@ if (!remote) {
   process.env.FIRESTORE_EMULATOR_HOST ||= '127.0.0.1:8080';
   process.env.FIREBASE_AUTH_EMULATOR_HOST ||= '127.0.0.1:9099';
 }
-const admin = require('firebase-admin');
-admin.initializeApp({ projectId: process.env.GCLOUD_PROJECT || 'demo-mtses' });
+const { initializeApp } = require('firebase-admin/app');
+const { getAuth } = require('firebase-admin/auth');
+const { getFirestore } = require('firebase-admin/firestore');
+
+initializeApp({ projectId: process.env.GCLOUD_PROJECT || 'demo-mtses' });
 
 const [uid, role] = process.argv.slice(2);
 if (!uid || !['fan', 'steward', 'manager', 'admin'].includes(role)) {
@@ -13,7 +16,7 @@ if (!uid || !['fan', 'steward', 'manager', 'admin'].includes(role)) {
   process.exit(1);
 }
 (async () => {
-  await admin.auth().setCustomUserClaims(uid, { role });
-  await admin.firestore().collection('users').doc(uid).set({ role }, { merge: true });
-  console.error(`${uid} is now ${role}. Sign out and in again to refresh the token.`);
+  await getAuth().setCustomUserClaims(uid, { role });
+  await getFirestore().collection('users').doc(uid).set({ role }, { merge: true });
+  console.error(`${uid} is now ${role}. Log out and back in to refresh the token.`);
 })();
