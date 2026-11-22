@@ -10,7 +10,8 @@
     "lint": "npm --prefix functions run lint",
     "format": "prettier --write .",
     "test:int": "firebase emulators:exec --only firestore --project demo-mtses \"npm --prefix functions run test:int\"",
-    "web": "npm --prefix web run dev"
+    "web": "npm --prefix web run dev",
+    "demo-setup": "node functions/scripts/demo-setup.js"
   },
   "devDependencies": {
     "firebase-tools": "^15.37.0",
