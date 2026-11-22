@@ -1,5 +1,3 @@
-const { HttpsError } = require('firebase-functions/v2/https');
-
 class DomainError extends Error {
   constructor(code, message) {
     super(message);
@@ -8,7 +6,10 @@ class DomainError extends Error {
 }
 
 function toHttpsError(err) {
-  return err instanceof DomainError ? new HttpsError(err.code, err.message) : err;
+  if (!(err instanceof DomainError)) return err;
+  // Loaded lazily so pure logic and unit tests never need the Functions runtime.
+  const { HttpsError } = require('firebase-functions/v2/https');
+  return new HttpsError(err.code, err.message);
 }
 
 module.exports = { DomainError, toHttpsError };
