@@ -15,4 +15,4 @@ Author: Akande Ebenmosi Treasure | Supervisor: R Ibrahim | Repository: https://g
 | Change request | change-request.md |
 | User manual | user-manual.md |
 | Progress, metrics, reflection, peer review, final report | reports/ |
-| Screenshots of the working system | screenshots/ |
+| Screenshots of the working system | screenshots.md, screenshots/ |
