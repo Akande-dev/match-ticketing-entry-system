@@ -4,7 +4,7 @@
 |---|---|
 | ID | CR-01 |
 | Raised by | Fan feedback: a buyer who cannot attend wants to pass the ticket to a friend |
-| Date | [DATE] |
+| Date | 22 November 2026 |
 | Description | A ticket holder can transfer a valid, unused ticket once to another registered user by email. The recipient gets a new ticket with a new QR code. The old QR stops working |
 | New requirement | FR-23 |
 | Priority | Should |

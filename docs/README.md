@@ -1,6 +1,6 @@
 # Documentation index
 Project: Match Ticketing and Stadium Entry System (React + Firebase)
-Author: [YOUR NAME] | Supervisor: [SUPERVISOR] | Repository: [REPO URL]
+Author: Akande Ebenmosi Treasure | Supervisor: R Ibrahim | Repository: https://github.com/Akande-dev/match-ticketing-entry-system
 
 | Brief deliverable | File |
 |---|---|

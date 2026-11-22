@@ -36,4 +36,4 @@ Adaptations: the supervisor acts as product owner; the Scrum master role rotates
 React (Vite), Firebase Authentication, Cloud Firestore, Cloud Functions, Firebase Emulator Suite, Jest, GitHub Actions.
 
 ## 7. Repository
-[REPO URL] with branches main, develop and feature/*; Conventional Commits; pull-request review.
+https://github.com/Akande-dev/match-ticketing-entry-system with branches main, develop and feature/*; Conventional Commits; pull-request review.

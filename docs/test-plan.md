@@ -42,3 +42,14 @@ Exit: all Must test cases executed; no open severity 1 or 2 defects; unit tests 
 
 ## 6. Coverage
 Run `npm --prefix functions test -- --coverage` and paste the summary here. Handlers and screens are covered by system tests, not unit tests.
+
+## 7. Test environment
+| Item | Value |
+|---|---|
+| Tester | Akande Ebenmosi Treasure |
+| Date | 22 November 2026 |
+| Browser | Brave (Chromium based) |
+| Operating system | Windows |
+| Runtime | Node 26, Java 21 (Temurin) |
+| Backend | Firebase Emulator Suite (Auth, Firestore, Functions), project id demo-mtses |
+| Note | Camera scanning in Brave needs camera permission for localhost. Manual entry was used for the recorded scans |

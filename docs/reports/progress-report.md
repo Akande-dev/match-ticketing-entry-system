@@ -1,5 +1,5 @@
 # Progress report (prototype)
-Prepared by [YOUR NAME] | Date [DATE]
+Prepared by Akande Ebenmosi Treasure | Date 22 November 2026
 
 ## Summary
 The main flow works end to end: register, choose seats, hold, pay (mock), receive a signed QR ticket, scan at the gate (VALID), rescan (ALREADY USED). See docs/screenshots.
