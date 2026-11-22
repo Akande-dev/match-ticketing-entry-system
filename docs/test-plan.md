@@ -66,3 +66,6 @@ Run `npm --prefix functions test -- --coverage` and paste the summary here. Hand
 | IT-TRF-06 | Open refund or the 2-hour cutoff blocks transfer | Integration |
 | IT-TRF-07 | New owner can be refunded and the seat is freed | Integration |
 | ST-08 | In the browser: transfer to a second account, old QR refused, new QR valid | System (manual) |
+
+## 9. Recorded run: integration tests (22 November 2026)
+Command: `npm run test:int` (Firestore emulator, Node 26). First run: 18 passed, 1 failed (IT-RES-01 timeout, see DEF-008). After raising the timeout: 19 passed, 19 total, covering concurrent buying, payments (idempotent, wrong amount, duplicate, late), the gate (one-time use, two gates at once, wrong match), refunds and ticket transfer.
