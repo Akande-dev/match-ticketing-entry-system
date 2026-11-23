@@ -35,3 +35,30 @@ Implemented on branch feature/CR-01-ticket-transfer and merged with tag v0.3.0.
 - Documents updated: SRS (FR-23 done), planning, user manual, security (TM-29, TM-30).
 - Actual effort: [FILL IN hours] against an estimate of about 14 story points (about 28 hours).
 - Defects found: [FILL IN, or none].
+
+
+---
+
+# Change request CR-02: multiple sports
+
+| Field | Content |
+|---|---|
+| ID | CR-02 |
+| Raised by | Product owner and fan feedback: the system should sell tickets for more than football |
+| Date | 22 November 2026 |
+| Description | Every event belongs to a sport (football, basketball, volleyball, table tennis, boxing). Sports are grouped into categories (team ball sports, racket sports, combat sports). Each sport has its own venue with its own seat types and prices. Fans can filter by sport and managers pick a sport when creating an event |
+| New requirement | FR-24 |
+| Priority | Should |
+| Decision | Approved and implemented (tag v0.4.0) |
+
+## Impact analysis
+| Area | Impact |
+|---|---|
+| Requirements | New FR-24; SRS section 3.1 extended |
+| Data | New field sport on matches, stadiums and tickets. Existing data without a sport is treated as football, so no migration is needed |
+| Code | New shared sports list (backend and web); match validation requires a valid sport; saveMatch stores it and refuses a venue that belongs to another sport; seed data rebuilt with five venues and ten events |
+| Screens | Event list gets category and sport filters; manager form gets a sport picker with side labels that change per sport (home/away, player 1/2, fighter 1/2); dashboard gets a sales by sport table |
+| Security | No new trust boundary. The sport is validated on the server against a fixed list, so a client cannot invent one |
+| Tests | Validation tests extended (every sport accepted, missing or unknown sport refused); new tests for the sports list |
+| Risk | Low: existing flows (seat hold, payment, scan, refund, transfer) do not depend on the sport |
+| Alternatives | One sport with a free-text field (rejected: no filtering, typos); separate system per sport (rejected: duplicated code) |

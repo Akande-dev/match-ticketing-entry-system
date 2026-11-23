@@ -4,6 +4,7 @@ import { collection, query, where } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 import { validateTicket } from '../../services/api';
 import { useLiveQuery } from '../../hooks/useLiveQuery';
+import { sportEmoji } from '../../utils/sports';
 
 const MESSAGES = {
   Valid: 'VALID: let them in', AlreadyUsed: 'ALREADY USED', Invalid: 'INVALID TICKET',
@@ -48,7 +49,7 @@ export default function ScannerPage() {
       <label htmlFor="match">Match</label>
       <select id="match" value={matchId} onChange={(e) => setMatchId(e.target.value)}>
         <option value="">Select a match…</option>
-        {matches.map((m) => <option key={m.id} value={m.id}>{m.homeTeam} vs {m.awayTeam}</option>)}
+        {matches.map((m) => <option key={m.id} value={m.id}>{sportEmoji(m.sport)} {m.homeTeam} vs {m.awayTeam}</option>)}
       </select>
       <label htmlFor="gate">Gate</label>
       <input id="gate" value={gate} maxLength={20} onChange={(e) => setGate(e.target.value)} />

@@ -75,3 +75,7 @@ Files: functions/src/tickets/.
 
 ## 7. Wireframes
 Key screens are the running application; see screenshots/. Add Figma or hand-drawn sketches here if your course requires pre-build wireframes.
+
+
+## 8. Schema update (CR-02)
+`matches/{id}` gains `sport`; `stadiums/{id}` gains `sport` (one venue per sport); `tickets/{id}` gains `sport`. Allowed sports: football, basketball, volleyball, table-tennis, boxing. Categories: team ball sports, racket sports, combat sports. The seed script builds five venues with different seat layouts and price tiers.

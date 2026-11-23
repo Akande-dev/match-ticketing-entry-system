@@ -5,6 +5,7 @@ import { db } from '../../services/firebase';
 import { requestRefund, transferTicket } from '../../services/api';
 import { useLiveQuery } from '../../hooks/useLiveQuery';
 import { useAuth } from '../auth/AuthContext';
+import { sportEmoji } from '../../utils/sports';
 
 const REFUND_LABEL = { Requested: 'Refund requested', Approved: 'Refund approved', Rejected: 'Refund rejected' };
 
@@ -60,7 +61,7 @@ export default function MyTicketsPage() {
           const canTransfer = canAct && (t.transferCount ?? 0) < 1;
           return (
             <li key={t.id} className="card">
-              <h2>{t.matchLabel}</h2>
+              <h2>{sportEmoji(t.sport)} {t.matchLabel}</h2>
               <p>{t.seatLabel}</p>
               {t.status === 'Valid' && <QRCodeSVG value={t.qrPayload} size={180} />}
               <p>Status: <strong>{t.status.toUpperCase()}</strong></p>

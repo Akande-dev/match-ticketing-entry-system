@@ -4,6 +4,7 @@ import { collection, orderBy, query } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 import { cancelMatch, publishMatch } from '../../services/api';
 import { useLiveQuery } from '../../hooks/useLiveQuery';
+import { sportEmoji, sportLabel } from '../../utils/sports';
 
 export default function MatchAdminPage() {
   const { docs: matches, loading, error } = useLiveQuery(() => query(collection(db, 'matches'), orderBy('kickoff', 'desc')), []);
@@ -27,10 +28,11 @@ export default function MatchAdminPage() {
       <p><Link to="/manager/matches/new">+ New match</Link></p>
       {message && <p role="alert">{message}</p>}
       <table>
-        <thead><tr><th>Match</th><th>Kick-off</th><th>Status</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Sport</th><th>Match</th><th>Starts</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
           {matches.map((m) => (
             <tr key={m.id}>
+              <td>{sportEmoji(m.sport)} {sportLabel(m.sport)}</td>
               <td>{m.homeTeam} vs {m.awayTeam}</td>
               <td>{m.kickoff.toDate().toLocaleString()}</td>
               <td>{m.status}</td>

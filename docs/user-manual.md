@@ -37,3 +37,10 @@ Audit log lists recent actions. Roles are assigned with `node functions/scripts/
 | No Scanner or Manager menu | Log out and back in so the new role loads |
 | Page shows no matches | Run `npm run seed` while the emulators are running |
 | Emulators stopped | Restart them; data resets, so seed again and register again |
+
+
+## Browsing by sport (fans)
+The home page lists upcoming events grouped by sport. Use the buttons under "All sports" (grouped as team ball sports, racket sports and combat sports) to show one sport only. Each card shows the sport, the sides, the start time and the lowest ticket price.
+
+## Creating an event for any sport (managers)
+In Manager, Matches, New match, choose the sport first. The venue list then shows only venues for that sport, and the side labels change (home and away team, player 1 and 2, or fighter 1 and 2). Sales by sport are at the top of the Sales page.
