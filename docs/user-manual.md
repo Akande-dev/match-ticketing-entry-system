@@ -44,3 +44,7 @@ The home page lists upcoming events grouped by sport. Use the buttons under "All
 
 ## Creating an event for any sport (managers)
 In Manager, Matches, New match, choose the sport first. The venue list then shows only venues for that sport, and the side labels change (home and away team, player 1 and 2, or fighter 1 and 2). Sales by sport are at the top of the Sales page.
+
+
+## The home page (fans)
+The home page shows the next event at the top with a Book your tickets now button, tiles for each sport (click one to filter), and cards for every upcoming event with the date, venue and lowest price. On an event page the ticket types are listed with their price and how many seats are left; choose seats below and press Hold seats & continue.

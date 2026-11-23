@@ -41,7 +41,7 @@ async function saveMatchCore(db, { uid, matchId, input, now = new Date() }) {
     batch.set(matchRef.collection('prices').doc(category), { amountMinor, currency: 'NGN' }));
 
   batch.set(matchRef, {
-    stadiumId: data.stadiumId, sport: data.sport, homeTeam: data.homeTeam, awayTeam: data.awayTeam,
+    stadiumId: data.stadiumId, venueName: venueSnap.data()?.name ?? null, sport: data.sport, homeTeam: data.homeTeam, awayTeam: data.awayTeam,
     kickoff: Timestamp.fromMillis(data.kickoffMs), status: 'Draft',
     minPrice: Math.min(...data.prices.values()), updatedAt: FieldValue.serverTimestamp(),
     ...(matchId ? {} : { createdBy: uid, createdAt: FieldValue.serverTimestamp() }),

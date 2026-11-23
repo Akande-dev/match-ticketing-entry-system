@@ -79,3 +79,7 @@ Key screens are the running application; see screenshots/. Add Figma or hand-dra
 
 ## 8. Schema update (CR-02)
 `matches/{id}` gains `sport`; `stadiums/{id}` gains `sport` (one venue per sport); `tickets/{id}` gains `sport`. Allowed sports: football, basketball, volleyball, table-tennis, boxing. Categories: team ball sports, racket sports, combat sports. The seed script builds five venues with different seat layouts and price tiers.
+
+
+## 9. Design references (CR-03)
+The home page layout was inspired by two reference designs (a travel-and-tickets landing page and a club ticket-window page). No images, logos or text were copied; the visual style is original and uses CSS gradients and emoji.
