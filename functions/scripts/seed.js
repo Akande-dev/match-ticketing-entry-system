@@ -92,7 +92,7 @@ async function commitInChunks(ops) {
     const v = venueById.get(m.venue);
     const matchRef = db.collection('matches').doc(m.id);
     ops.push((b) => b.set(matchRef, {
-      stadiumId: v.id, sport: m.sport, homeTeam: m.home, awayTeam: m.away,
+      stadiumId: v.id, venueName: v.name, sport: m.sport, homeTeam: m.home, awayTeam: m.away,
       kickoff: startAt(m.days, m.hour), status: 'OnSale',
       minPrice: Math.min(...v.sections.map((s) => s.price)),
     }));

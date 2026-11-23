@@ -4,6 +4,7 @@ import { collection, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 import { holdSeats } from '../../services/api';
 import { formatMoney } from '../../utils/money';
+import { ICON } from '../../utils/icons';
 import { sportEmoji, sportLabel } from '../../utils/sports';
 
 const MAX_SEATS = 6;
@@ -47,15 +48,21 @@ export default function MatchPage() {
   }, [matchId]);
 
   if (loading) return <main><p>Loading…</p></main>;
-  if (!match) return <main><p role="alert">Match not found.</p></main>;
+  if (!match) return <main><p role="alert">Event not found.</p></main>;
 
   const nowMs = Date.now();
+  const when = match.kickoff.toDate();
   const sections = {};
+  const perType = {};
   seats.forEach((s) => {
     const { row, number } = parseSeatId(s.id);
     (sections[s.sectionId] ??= { category: s.category, seats: [] }).seats.push({ ...s, row, number });
+    const t = (perType[s.category] ??= { total: 0, left: 0 });
+    t.total += 1;
+    if (seatState(s, false, nowMs) === 'available') t.left += 1;
   });
   Object.values(sections).forEach((sec) => sec.seats.sort((a, b) => a.row - b.row || a.number - b.number));
+  const types = Object.entries(perType).sort(([a], [b]) => (prices[b] ?? 0) - (prices[a] ?? 0));
 
   const total = [...selected].reduce((sum, id) => sum + (prices[seats.find((s) => s.id === id)?.category] ?? 0), 0);
 
@@ -84,12 +91,27 @@ export default function MatchPage() {
 
   return (
     <main>
-      <h1>{match.homeTeam} vs {match.awayTeam}</h1><p><span className="sport-badge">{sportEmoji(match.sport)} {sportLabel(match.sport)}</span></p>
-      <p>{match.kickoff.toDate().toLocaleString()}</p>
-      <p>Legend: ○ available, ✓ selected, ◐ held by someone, × sold</p>
+      <div className="event-head">
+        <p className="kicker-dark">{sportEmoji(match.sport)} {sportLabel(match.sport).toUpperCase()}{match.venueName ? ` · ${match.venueName.toUpperCase()}` : ''}</p>
+        <h1>{match.homeTeam} v {match.awayTeam}</h1>
+        <p className="muted">{when.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} · {when.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}{match.venueName ? ` · ${match.venueName}` : ''}</p>
+      </div>
+
+      <h2 className="section-title"><span>TICKET</span> TYPES</h2>
+      {types.map(([category, t], i) => (
+        <div key={category} className={`window-row${i === 0 ? ' window-top' : ''}`}>
+          <b>{category}</b>
+          <span className="window-price">{formatMoney(prices[category])}</span>
+          <span className={`pill${t.left === 0 ? ' pill-out' : ''}`}>{t.left === 0 ? 'Sold out' : `${t.left} of ${t.total} left`}</span>
+        </div>
+      ))}
+      <p className="muted small">Maximum {MAX_SEATS} seats per order. Seats are held for 10 minutes while you pay.</p>
+
+      <h2 className="section-title"><span>CHOOSE</span> YOUR SEATS</h2>
+      <p className="muted small">Legend: ○ available, ✓ selected, ◐ held by someone, × sold</p>
       {Object.entries(sections).map(([id, sec]) => (
         <section key={id}>
-          <h2>{id.toUpperCase()} ({sec.category}, {formatMoney(prices[sec.category])})</h2>
+          <h3>{id.toUpperCase()} ({sec.category}, {formatMoney(prices[sec.category])})</h3>
           <div className="seat-grid">
             {sec.seats.map((seat) => {
               const state = seatState(seat, selected.has(seat.id), nowMs);
@@ -105,10 +127,10 @@ export default function MatchPage() {
         </section>
       ))}
       <footer className="sticky-bar">
-        <span>{selected.size} seat(s) · {formatMoney(total)}</span>
+        <span>{ICON.ticket} {selected.size} seat(s) · <b>{formatMoney(total)}</b></span>
         {message && <span role="alert"> {message}</span>}
-        <button type="button" disabled={!selected.size || busy} onClick={handleHold}>
-          {busy ? 'Holding…' : 'Hold seats & continue'}
+        <button type="button" className="btn btn-red" disabled={!selected.size || busy} onClick={handleHold}>
+          {busy ? 'Holding…' : `Hold seats & continue ${ICON.arrow}`}
         </button>
       </footer>
     </main>

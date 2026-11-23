@@ -62,3 +62,28 @@ Implemented on branch feature/CR-01-ticket-transfer and merged with tag v0.3.0.
 | Tests | Validation tests extended (every sport accepted, missing or unknown sport refused); new tests for the sports list |
 | Risk | Low: existing flows (seat hold, payment, scan, refund, transfer) do not depend on the sport |
 | Alternatives | One sport with a free-text field (rejected: no filtering, typos); separate system per sport (rejected: duplicated code) |
+
+
+---
+
+# Change request CR-03: customer-facing home page redesign
+
+| Field | Content |
+|---|---|
+| ID | CR-03 |
+| Raised by | Product owner: the home page should look like a modern ticket-selling site |
+| Date | 22 November 2026 |
+| Description | New home page with a hero banner, a featured next event, browse-by-sport tiles, event cards with a from-price, a why-buy strip and a footer. The event page shows ticket types with price and seats left. Navigation and footer restyled |
+| Requirement | NFR-06 usability (first impression and findability) |
+| Decision | Approved and implemented (tag v0.5.0) |
+
+## Impact analysis
+| Area | Impact |
+|---|---|
+| Screens | Home page, event page, navigation bar and footer; global stylesheet |
+| Data | Events store venueName so that public pages can show the venue (venues are only readable after sign-in under the security rules) |
+| Security | No new access. The public page reads only on-sale events, as before |
+| Assets | No third-party photos or logos. Sport colours and emoji are used, so the design works offline and avoids copyright and image-rights issues |
+| Tests | No logic changed, so existing unit tests still apply; checked by a production build and a visual walkthrough |
+| Risk | Low |
+| Out of scope | Member priority sale windows and membership tiers (seen in the reference design), newsletter sign-up, travel packages |

@@ -1,68 +1,146 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, orderBy, query, where } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 import { useLiveQuery } from '../../hooks/useLiveQuery';
 import { formatMoney } from '../../utils/money';
-import { GROUPS, SPORT_IDS, sportEmoji, sportLabel, sportOf, sportsInGroup } from '../../utils/sports';
+import { ICON } from '../../utils/icons';
+import { SPORTS, SPORT_IDS, sportEmoji, sportLabel, sportOf } from '../../utils/sports';
+
+const dateText = (d) => d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+const timeText = (d) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+const PERKS = [
+  { icon: ICON.phone, title: 'Instant QR ticket', text: 'On your phone' },
+  { icon: ICON.lock, title: 'Secure checkout', text: 'Safe payments' },
+  { icon: ICON.check, title: 'One-time entry', text: 'No fake tickets' },
+];
+const WHY = [
+  { icon: ICON.shield, title: 'Signed QR tickets', text: 'Every ticket is digitally signed' },
+  { icon: ICON.check, title: 'No double sales', text: 'A seat can only be sold once' },
+  { icon: ICON.swap, title: 'Transfer to a friend', text: 'Pass a ticket to another fan' },
+  { icon: ICON.refresh, title: 'Easy refunds', text: 'Ask for a refund up to 48 hours before' },
+];
 
 export default function MatchListPage() {
   const { docs, loading, error } = useLiveQuery(
     () => query(collection(db, 'matches'), where('status', '==', 'OnSale'), orderBy('kickoff')), [],
   );
   const [filter, setFilter] = useState('all');
+  const eventsRef = useRef(null);
 
-  if (loading) return <main><p>Loading matches…</p></main>;
-  if (error) return <main><p role="alert">{error}</p></main>;
+  if (loading) return <main className="home"><div className="wrap"><p>Loading events…</p></div></main>;
+  if (error) return <main className="home"><div className="wrap"><p role="alert">{error}</p></div></main>;
 
   const matches = docs.map((m) => ({ ...m, sport: sportOf(m) }));
+  const next = matches[0];
   const count = (id) => matches.filter((m) => m.sport === id).length;
-  const shown = filter === 'all' ? SPORT_IDS.filter((id) => count(id) > 0) : [filter];
+  const shown = filter === 'all' ? matches : matches.filter((m) => m.sport === filter);
+
+  function pick(id) {
+    setFilter(id);
+    eventsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   return (
-    <main>
-      <h1>Upcoming events</h1>
+    <main className="home">
+      <header className="hero">
+        <div className="wrap hero-inner">
+          <p className="kicker">FEEL THE PASSION.</p>
+          <h1>Live the game.<br /><span>Be there!</span></h1>
+          <p className="hero-sub">Football, basketball, volleyball, table tennis and boxing. Pick your seat, get a QR ticket, walk straight in.</p>
+          <ul className="perks">
+            {PERKS.map((p) => (
+              <li key={p.title}><span className="perk-icon">{p.icon}</span><span><b>{p.title}</b><small>{p.text}</small></span></li>
+            ))}
+          </ul>
+          <div className="hero-art" aria-hidden="true">
+            {SPORT_IDS.map((id) => <span key={id}>{sportEmoji(id)}</span>)}
+          </div>
+        </div>
+      </header>
 
-      <div className="chips">
-        <button type="button" className="chip" aria-pressed={filter === 'all'} onClick={() => setFilter('all')}>
-          All sports ({matches.length})
-        </button>
-      </div>
-      {GROUPS.map((group) => (
-        <div key={group}>
-          <p className="group-label">{group}</p>
+      {next && (
+        <section className="wrap featured">
+          <div className="featured-card">
+            <p className="featured-label">{sportEmoji(next.sport)} NEXT EVENT · {sportLabel(next.sport).toUpperCase()}</p>
+            <div className="vs-row">
+              <div className="side"><b>{next.homeTeam}</b></div>
+              <span className="vs"><span>VS</span></span>
+              <div className="side"><b>{next.awayTeam}</b></div>
+            </div>
+            <p className="meta-row">
+              <span>{ICON.calendar} {dateText(next.kickoff.toDate())}</span>
+              <span>{ICON.clock} {timeText(next.kickoff.toDate())}</span>
+              {next.venueName && <span>{ICON.pin} {next.venueName}</span>}
+            </p>
+            <Link className="btn btn-red" to={`/matches/${next.id}`}>BOOK YOUR TICKETS NOW {ICON.arrow}</Link>
+          </div>
+        </section>
+      )}
+
+      <section className="wrap block">
+        <h2 className="section-title"><span>BROWSE</span> BY SPORT</h2>
+        <div className="tiles">
+          {SPORT_IDS.map((id) => (
+            <button key={id} type="button" className={`tile sport-${id}`} disabled={count(id) === 0} onClick={() => pick(id)}>
+              <span className="tile-emoji">{sportEmoji(id)}</span>
+              <b>{sportLabel(id)}</b>
+              <small>{SPORTS[id].group}</small>
+              <em>{count(id)} {count(id) === 1 ? 'event' : 'events'}</em>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="wrap block" ref={eventsRef}>
+        <div className="section-head">
+          <h2 className="section-title"><span>UPCOMING</span> EVENTS</h2>
           <div className="chips">
-            {sportsInGroup(group).map((id) => (
-              <button key={id} type="button" className="chip" aria-pressed={filter === id}
-                disabled={count(id) === 0} onClick={() => setFilter(id)}>
-                {sportEmoji(id)} {sportLabel(id)} ({count(id)})
+            <button type="button" className="chip" aria-pressed={filter === 'all'} onClick={() => setFilter('all')}>All ({matches.length})</button>
+            {SPORT_IDS.map((id) => (
+              <button key={id} type="button" className="chip" aria-pressed={filter === id} disabled={count(id) === 0} onClick={() => setFilter(id)}>
+                {sportEmoji(id)} {sportLabel(id)}
               </button>
             ))}
           </div>
         </div>
-      ))}
+        {!shown.length && <p>No events on sale for this sport yet.</p>}
+        <ul className="event-grid">
+          {shown.map((m) => {
+            const d = m.kickoff.toDate();
+            return (
+              <li key={m.id} className={`event sport-${m.sport}`}>
+                <div className="event-top">
+                  {m.id === next?.id && <span className="ribbon">NEXT UP</span>}
+                  <span className="event-emoji">{sportEmoji(m.sport)}</span>
+                  <span className="event-sides">{m.homeTeam}<em>vs</em>{m.awayTeam}</span>
+                </div>
+                <div className="event-body">
+                  <span className="sport-badge">{sportEmoji(m.sport)} {sportLabel(m.sport)}</span>
+                  <p className="meta">{ICON.calendar} {dateText(d)} · {timeText(d)}</p>
+                  {m.venueName && <p className="meta">{ICON.pin} {m.venueName}</p>}
+                  <div className="event-foot">
+                    <div><small>FROM</small><strong className="price">{formatMoney(m.minPrice)}</strong></div>
+                    <Link className="btn btn-navy" to={`/matches/${m.id}`}>VIEW SEATS</Link>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
 
-      {!matches.length && <p>No events on sale right now.</p>}
-      {shown.map((id) => {
-        const list = matches.filter((m) => m.sport === id);
-        return (
-          <section key={id}>
-            <h2>{sportEmoji(id)} {sportLabel(id)}</h2>
-            {!list.length && <p>No {sportLabel(id).toLowerCase()} events on sale yet.</p>}
-            <ul className="cards">
-              {list.map((m) => (
-                <li key={m.id} className="card">
-                  <span className="sport-badge">{sportEmoji(id)} {sportLabel(id)}</span>
-                  <h3>{m.homeTeam} vs {m.awayTeam}</h3>
-                  <p>{m.kickoff.toDate().toLocaleString()}</p>
-                  <p>From {formatMoney(m.minPrice)}</p>
-                  <Link to={`/matches/${m.id}`}>Buy tickets</Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        );
-      })}
+      <section className="wrap block">
+        <div className="why">
+          <h2>WHY BUY <span>HERE?</span></h2>
+          <div className="why-grid">
+            {WHY.map((w) => (
+              <div key={w.title} className="why-item"><span className="perk-icon">{w.icon}</span><b>{w.title}</b><small>{w.text}</small></div>
+            ))}
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
