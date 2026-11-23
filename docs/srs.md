@@ -55,3 +55,9 @@
 | NFR-07 | Accessibility | Labels, keyboard use, readable contrast | Manual check |
 | NFR-08 | Maintainability | Linted code, tests on core logic | 48 unit tests |
 | NFR-09 | Scalability | 500 concurrent users | Not load tested; stated as a limitation |
+
+
+## Change CR-02 (multiple sports)
+| ID | Requirement | Priority | Status |
+|---|---|---|---|
+| FR-24 | Events belong to a sport. Sports are grouped into categories. Fans can browse and filter by sport. Managers choose a sport and a venue for that sport. The dashboard shows sales by sport | Should | Done |

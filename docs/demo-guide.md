@@ -39,3 +39,9 @@ Press Enter in the launcher window, or run `stop-demo.bat`.
 | Browser shows no matches | Wait 10 seconds and refresh; if still empty, stop and start again |
 | Menu lacks Scanner or Manager | Log out and back in so the role loads |
 | Launcher window closed by mistake | Run `stop-demo.bat`, then start again |
+
+
+## Multi-sport part of the demo (CR-02)
+1. On the home page show the sport buttons grouped by category, then click Boxing and Table tennis.
+2. Buy a ticket for a boxing event as fan@demo.com. Show that the seat types and prices differ from football (Ringside, Floor, Balcony).
+3. As manager@demo.com open Manager: the Sales page shows sales by sport. Open Matches, New match, change the sport and show that the venue list and the side labels change.

@@ -69,3 +69,12 @@ Run `npm --prefix functions test -- --coverage` and paste the summary here. Hand
 
 ## 9. Recorded run: integration tests (22 November 2026)
 Command: `npm run test:int` (Firestore emulator, Node 26). First run: 18 passed, 1 failed (IT-RES-01 timeout, see DEF-008). After raising the timeout: 19 passed, 19 total, covering concurrent buying, payments (idempotent, wrong amount, duplicate, late), the gate (one-time use, two gates at once, wrong match), refunds and ticket transfer.
+
+
+## 10. CR-02 tests
+| ID | Scenario | Level |
+|---|---|---|
+| UT-SPORT-01 | Five sports in three categories | Unit |
+| UT-SPORT-02 | Only known sports accepted (including inherited keys such as toString) | Unit |
+| UT-MATCH | Every sport accepted; missing or unknown sport refused | Unit |
+| ST-09 | Filter the home page by each sport; create a basketball event; check a boxing venue is not offered for football; check sales by sport | System (manual) |

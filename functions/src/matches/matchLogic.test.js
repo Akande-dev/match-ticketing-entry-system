@@ -2,18 +2,26 @@ const { validateMatchInput } = require('./matchLogic');
 
 const ctx = { categories: ['VIP', 'Regular'], nowMs: 1000 };
 const good = {
-  stadiumId: 's1', homeTeam: ' Home FC ', awayTeam: 'Away', kickoffMs: 2000,
+  sport: 'football', stadiumId: 's1', homeTeam: ' Home FC ', awayTeam: 'Away', kickoffMs: 2000,
   prices: { VIP: 1500000, Regular: 200000 },
 };
 
-test('accepts valid input and trims names', () => {
+test('accepts valid input, trims names and keeps the sport', () => {
   const out = validateMatchInput(good, ctx);
   expect(out.homeTeam).toBe('Home FC');
+  expect(out.sport).toBe('football');
   expect(out.prices.get('VIP')).toBe(1500000);
 });
+test('every supported sport is accepted', () => {
+  for (const sport of ['football', 'basketball', 'volleyball', 'table-tennis', 'boxing']) {
+    expect(validateMatchInput({ ...good, sport }, ctx).sport).toBe(sport);
+  }
+});
 test.each([
-  ['same team twice', { awayTeam: 'home fc' }],
-  ['kick-off in the past', { kickoffMs: 500 }],
+  ['missing sport', { sport: undefined }],
+  ['unknown sport', { sport: 'cricket' }],
+  ['same side twice', { awayTeam: 'home fc' }],
+  ['start in the past', { kickoffMs: 500 }],
   ['missing price', { prices: { VIP: 1500000 } }],
   ['unknown category', { prices: { ...good.prices, Gold: 100 } }],
   ['fractional price', { prices: { VIP: 10.5, Regular: 200000 } }],

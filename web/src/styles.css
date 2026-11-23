@@ -21,3 +21,10 @@ button { cursor: pointer; }
 table { border-collapse: collapse; width: 100%; }
 th, td { border-bottom: 1px solid #ddd; padding: 0.5rem; text-align: left; }
 [role="alert"] { color: #b42318; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.25rem 0 0.5rem; }
+.chip { border: 1px solid #888; border-radius: 999px; background: #fff; padding: 0.35rem 0.9rem; }
+.chip[aria-pressed="true"] { background: #1d6fdc; color: #fff; border-color: #1d6fdc; }
+.chip:disabled { opacity: 0.45; cursor: not-allowed; }
+.group-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: #555; margin: 0.75rem 0 0.1rem; }
+.sport-badge { display: inline-block; font-size: 0.85rem; padding: 0.1rem 0.6rem; border-radius: 999px; background: #eef2ff; }

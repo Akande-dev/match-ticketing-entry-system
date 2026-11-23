@@ -4,6 +4,7 @@ import { collection, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 import { holdSeats } from '../../services/api';
 import { formatMoney } from '../../utils/money';
+import { sportEmoji, sportLabel } from '../../utils/sports';
 
 const MAX_SEATS = 6;
 const SYMBOL = { available: '○', selected: '✓', held: '◐', sold: '×' };
@@ -83,7 +84,7 @@ export default function MatchPage() {
 
   return (
     <main>
-      <h1>{match.homeTeam} vs {match.awayTeam}</h1>
+      <h1>{match.homeTeam} vs {match.awayTeam}</h1><p><span className="sport-badge">{sportEmoji(match.sport)} {sportLabel(match.sport)}</span></p>
       <p>{match.kickoff.toDate().toLocaleString()}</p>
       <p>Legend: ○ available, ✓ selected, ◐ held by someone, × sold</p>
       {Object.entries(sections).map(([id, sec]) => (

@@ -77,7 +77,7 @@ async function confirmPaymentCore(db, signer, { orderId, providerRef, amountMino
       const ticketRef = db.collection('tickets').doc();
       tx.set(ticketRef, {
         orderId, userId: order.userId, matchId: order.matchId, matchLabel,
-        kickoff: matchData.kickoff, seatId: s.id, seatLabel: label, category,
+        kickoff: matchData.kickoff, sport: matchData.sport ?? null, seatId: s.id, seatLabel: label, category,
         priceMinor: priceBySeat.get(s.id) ?? null,
         status: 'Valid', qrPayload: signer.sign(ticketRef.id, order.matchId),
         usedAt: null, usedGate: null, createdAt: FieldValue.serverTimestamp(),

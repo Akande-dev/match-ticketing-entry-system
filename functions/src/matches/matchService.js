@@ -17,6 +17,11 @@ async function saveMatchCore(db, { uid, matchId, input, now = new Date() }) {
   const sections = await loadSections(db, stadiumId);
   const categories = [...new Set(sections.map((s) => s.data().category))];
   const data = validateMatchInput({ ...input, stadiumId }, { categories, nowMs: now.getTime() });
+  const venueSnap = await db.collection('stadiums').doc(stadiumId).get();
+  const venueSport = venueSnap.data()?.sport;
+  if (venueSport && venueSport !== data.sport) {
+    throw new DomainError('failed-precondition', 'That venue is not set up for this sport.');
+  }
 
   const matchRef = matchId
     ? db.collection('matches').doc(requireString(matchId, 'matchId', 100))
@@ -36,7 +41,7 @@ async function saveMatchCore(db, { uid, matchId, input, now = new Date() }) {
     batch.set(matchRef.collection('prices').doc(category), { amountMinor, currency: 'NGN' }));
 
   batch.set(matchRef, {
-    stadiumId: data.stadiumId, homeTeam: data.homeTeam, awayTeam: data.awayTeam,
+    stadiumId: data.stadiumId, sport: data.sport, homeTeam: data.homeTeam, awayTeam: data.awayTeam,
     kickoff: Timestamp.fromMillis(data.kickoffMs), status: 'Draft',
     minPrice: Math.min(...data.prices.values()), updatedAt: FieldValue.serverTimestamp(),
     ...(matchId ? {} : { createdBy: uid, createdAt: FieldValue.serverTimestamp() }),

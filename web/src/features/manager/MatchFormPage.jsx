@@ -3,8 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 import { saveMatch } from '../../services/api';
+import { GROUPS, SPORTS, sportsInGroup } from '../../utils/sports';
 
-const EMPTY = { stadiumId: '', homeTeam: '', awayTeam: '', kickoff: '', prices: {} };
+const EMPTY = { sport: 'football', stadiumId: '', homeTeam: '', awayTeam: '', kickoff: '', prices: {} };
 const toLocalInput = (ms) => new Date(ms - new Date(ms).getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 
 export default function MatchFormPage() {
@@ -34,13 +35,16 @@ export default function MatchFormPage() {
       const prices = {};
       p.forEach((d) => { prices[d.id] = String(d.data().amountMinor / 100); });
       const data = m.data();
-      setForm({ stadiumId: data.stadiumId, homeTeam: data.homeTeam, awayTeam: data.awayTeam,
-        kickoff: toLocalInput(data.kickoff.toMillis()), prices });
+      setForm({ sport: data.sport ?? 'football', stadiumId: data.stadiumId, homeTeam: data.homeTeam,
+        awayTeam: data.awayTeam, kickoff: toLocalInput(data.kickoff.toMillis()), prices });
     })();
   }, [matchId]);
 
+  const sides = SPORTS[form.sport]?.sides ?? ['Home team', 'Away team'];
+  const venues = stadiums.filter((s) => !s.sport || s.sport === form.sport);
   const setField = (field) => (e) => setForm({ ...form, [field]: e.target.value });
   const setPrice = (c) => (e) => setForm({ ...form, prices: { ...form.prices, [c]: e.target.value } });
+  const changeSport = (e) => setForm({ ...form, sport: e.target.value, stadiumId: '', prices: {} });
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -50,7 +54,7 @@ export default function MatchFormPage() {
       const prices = {};
       categories.forEach((c) => { prices[c] = Math.round(Number(form.prices[c]) * 100); });
       await saveMatch({ matchId, input: {
-        stadiumId: form.stadiumId, homeTeam: form.homeTeam, awayTeam: form.awayTeam,
+        sport: form.sport, stadiumId: form.stadiumId, homeTeam: form.homeTeam, awayTeam: form.awayTeam,
         kickoffMs: new Date(form.kickoff).getTime(), prices,
       } });
       navigate('/manager/matches');
@@ -64,16 +68,24 @@ export default function MatchFormPage() {
     <section>
       <h2>{matchId ? 'Edit draft match' : 'New match'}</h2>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="stadium">Stadium</label>
+        <label htmlFor="sport">Sport</label>
+        <select id="sport" value={form.sport} onChange={changeSport} disabled={Boolean(matchId)}>
+          {GROUPS.map((g) => (
+            <optgroup key={g} label={g}>
+              {sportsInGroup(g).map((id) => <option key={id} value={id}>{SPORTS[id].label}</option>)}
+            </optgroup>
+          ))}
+        </select>
+        <label htmlFor="stadium">Venue</label>
         <select id="stadium" value={form.stadiumId} onChange={setField('stadiumId')} required>
           <option value="">Select…</option>
-          {stadiums.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+          {venues.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
-        <label htmlFor="home">Home team</label>
+        <label htmlFor="home">{sides[0]}</label>
         <input id="home" value={form.homeTeam} onChange={setField('homeTeam')} maxLength={60} required />
-        <label htmlFor="away">Away team</label>
+        <label htmlFor="away">{sides[1]}</label>
         <input id="away" value={form.awayTeam} onChange={setField('awayTeam')} maxLength={60} required />
-        <label htmlFor="kickoff">Kick-off</label>
+        <label htmlFor="kickoff">Start time</label>
         <input id="kickoff" type="datetime-local" value={form.kickoff} onChange={setField('kickoff')} required />
         {categories.map((c) => (
           <div key={c}>
