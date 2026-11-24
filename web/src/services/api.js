@@ -15,3 +15,7 @@ export const saveMatch = call('saveMatch');
 export const publishMatch = call('publishMatch');
 export const cancelMatch = call('cancelMatch');
 export const transferTicket = call('transferTicket');
+
+export const listUsers = call('listUsers');
+export const setUserRole = call('setUserRole');
+export const setUserDisabled = call('setUserDisabled');

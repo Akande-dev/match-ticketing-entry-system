@@ -16,6 +16,9 @@ import MatchAdminPage from './features/manager/MatchAdminPage';
 import MatchFormPage from './features/manager/MatchFormPage';
 import RefundsPage from './features/manager/RefundsPage';
 import AuditLogPage from './features/admin/AuditLogPage';
+import AdminLayout from './features/admin/AdminLayout';
+import AdminOverviewPage from './features/admin/AdminOverviewPage';
+import UsersPage from './features/admin/UsersPage';
 
 const STAFF = [ROLES.STEWARD, ROLES.ADMIN];
 const MANAGERS = [ROLES.MANAGER, ROLES.ADMIN];
@@ -34,7 +37,7 @@ function NavBar() {
             {user && <NavLink to="/my-tickets">My tickets</NavLink>}
             {STAFF.includes(role) && <NavLink to="/scanner">Scanner</NavLink>}
             {MANAGERS.includes(role) && <NavLink to="/manager">Manager</NavLink>}
-            {role === ROLES.ADMIN && <NavLink to="/admin/audit">Audit log</NavLink>}
+            {role === ROLES.ADMIN && <NavLink to="/admin">Admin</NavLink>}
           </div>
           {user ? (
             <button type="button" className="btn btn-navy" onClick={logout}>Log out ({user.displayName ?? user.email}, {role})</button>
@@ -99,7 +102,11 @@ export default function App() {
           <Route path="matches/:matchId/edit" element={<MatchFormPage />} />
           <Route path="refunds" element={<RefundsPage />} />
         </Route>
-        <Route path="/admin/audit" element={guard(<AuditLogPage />, [ROLES.ADMIN])} />
+        <Route path="/admin" element={guard(<AdminLayout />, [ROLES.ADMIN])}>
+          <Route index element={<AdminOverviewPage />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="audit" element={<AuditLogPage />} />
+        </Route>
       </Routes>
       <Footer />
     </>

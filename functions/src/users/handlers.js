@@ -28,3 +28,10 @@ exports.setUserDisabled = callable(['admin'], async ({ auth, data, db }) => {
   }));
   return { ok: true };
 });
+
+const { toUserSummary } = require('./userSummary');
+
+exports.listUsers = callable(['admin'], async () => {
+  const res = await getAuth().listUsers(200);
+  return { users: res.users.map(toUserSummary) };
+});
