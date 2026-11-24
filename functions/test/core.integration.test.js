@@ -10,6 +10,8 @@ const { buildTicketValidator } = require('../src/tickets/composition');
 const { SECRET, signer, uniqueId, seedMatch, buyTickets } = require('./helpers');
 
 const db = getFirestore();
+const U1 = uniqueId('u'); // fresh users each run, so leftover holds never build up (DEF-009)
+const U9 = uniqueId('u');
 const validator = buildTicketValidator({ db, secret: SECRET });
 const scan = (payload, matchId, gate = 'A') => validator.validate(payload, { matchId, gate, stewardId: 's1' });
 const seat = async (matchId, id) => (await db.doc(`matches/${matchId}/inventory/${id}`).get()).data();
@@ -27,17 +29,17 @@ test('IT-RES-01: ten concurrent buyers, exactly one gets the seat', async () => 
 test('IT-RES-03: a user cannot hold more than the allowed number of open orders', async () => {
   const matchId = uniqueId('m');
   await seedMatch(db, matchId, 4);
-  await holdSeatsCore(db, { uid: 'u9', matchId, seatIds: ['S1'] });
-  await holdSeatsCore(db, { uid: 'u9', matchId, seatIds: ['S2'] });
-  await expect(holdSeatsCore(db, { uid: 'u9', matchId, seatIds: ['S3'] })).rejects.toThrow(/open seat holds/);
+  await holdSeatsCore(db, { uid: U9, matchId, seatIds: ['S1'] });
+  await holdSeatsCore(db, { uid: U9, matchId, seatIds: ['S2'] });
+  await expect(holdSeatsCore(db, { uid: U9, matchId, seatIds: ['S3'] })).rejects.toThrow(/open seat holds/);
 });
 
 test('IT-RES-04: cancel frees seats; only the owner may cancel', async () => {
   const matchId = uniqueId('m');
   await seedMatch(db, matchId, 1);
-  const { orderId } = await holdSeatsCore(db, { uid: 'u1', matchId, seatIds: ['S1'] });
+  const { orderId } = await holdSeatsCore(db, { uid: U1, matchId, seatIds: ['S1'] });
   await expect(cancelOrderCore(db, { uid: 'other', orderId })).rejects.toThrow(/not found/i);
-  expect(await cancelOrderCore(db, { uid: 'u1', orderId })).toEqual({ status: 'Cancelled' });
+  expect(await cancelOrderCore(db, { uid: U1, orderId })).toEqual({ status: 'Cancelled' });
   expect((await seat(matchId, 'S1')).status).toBe('Available');
 });
 
@@ -56,8 +58,8 @@ test('IT-RES-05: the expiry job frees stale holds only', async () => {
 test('IT-PAY-01: payment is idempotent and issues one signed ticket per seat', async () => {
   const matchId = uniqueId('m');
   await seedMatch(db, matchId, 2);
-  const { orderId, totalMinor } = await holdSeatsCore(db, { uid: 'u1', matchId, seatIds: ['S1', 'S2'] });
-  const args = { orderId, providerRef: 'p1', amountMinor: totalMinor };
+  const { orderId, totalMinor } = await holdSeatsCore(db, { uid: U1, matchId, seatIds: ['S1', 'S2'] });
+  const args = { orderId, providerRef: `p1-${orderId}`, amountMinor: totalMinor };
   await confirmPaymentCore(db, signer, args);
   expect((await confirmPaymentCore(db, signer, args)).alreadyPaid).toBe(true);
   const tickets = (await db.collection('tickets').where('orderId', '==', orderId).get()).docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -68,8 +70,8 @@ test('IT-PAY-01: payment is idempotent and issues one signed ticket per seat', a
 test('IT-PAY-02: a wrong amount creates no tickets and records a refund', async () => {
   const matchId = uniqueId('m');
   await seedMatch(db, matchId, 1);
-  const { orderId } = await holdSeatsCore(db, { uid: 'u1', matchId, seatIds: ['S1'] });
-  expect(await confirmPaymentCore(db, signer, { orderId, providerRef: 'p', amountMinor: 1 }))
+  const { orderId } = await holdSeatsCore(db, { uid: U1, matchId, seatIds: ['S1'] });
+  expect(await confirmPaymentCore(db, signer, { orderId, providerRef: `p-${orderId}`, amountMinor: 1 }))
     .toEqual({ refundDue: true, mismatch: true });
   expect(await ticketCount(orderId)).toBe(0);
   expect(await refundsFor(orderId)).toBe(1);
@@ -78,10 +80,10 @@ test('IT-PAY-02: a wrong amount creates no tickets and records a refund', async 
 test('IT-PAY-05: a second payment on a paid order creates exactly one refund record', async () => {
   const matchId = uniqueId('m');
   await seedMatch(db, matchId, 1);
-  const { orderId, totalMinor } = await holdSeatsCore(db, { uid: 'u1', matchId, seatIds: ['S1'] });
-  await confirmPaymentCore(db, signer, { orderId, providerRef: 'r1', amountMinor: totalMinor });
-  expect(await confirmPaymentCore(db, signer, { orderId, providerRef: 'r2', amountMinor: totalMinor })).toEqual({ refundDue: true });
-  expect(await confirmPaymentCore(db, signer, { orderId, providerRef: 'r2', amountMinor: totalMinor })).toEqual({ alreadyHandled: true });
+  const { orderId, totalMinor } = await holdSeatsCore(db, { uid: U1, matchId, seatIds: ['S1'] });
+  await confirmPaymentCore(db, signer, { orderId, providerRef: `r1-${orderId}`, amountMinor: totalMinor });
+  expect(await confirmPaymentCore(db, signer, { orderId, providerRef: `r2-${orderId}`, amountMinor: totalMinor })).toEqual({ refundDue: true });
+  expect(await confirmPaymentCore(db, signer, { orderId, providerRef: `r2-${orderId}`, amountMinor: totalMinor })).toEqual({ alreadyHandled: true });
   expect(await refundsFor(orderId)).toBe(1);
   expect(await ticketCount(orderId)).toBe(1);
 });
@@ -90,9 +92,9 @@ test('IT-PAY-06: a payment after the hold expired creates a refund, not a ticket
   const matchId = uniqueId('m');
   await seedMatch(db, matchId, 1);
   const past = new Date(Date.now() - 20 * 60 * 1000);
-  const { orderId, totalMinor } = await holdSeatsCore(db, { uid: 'u1', matchId, seatIds: ['S1'], now: past });
+  const { orderId, totalMinor } = await holdSeatsCore(db, { uid: U1, matchId, seatIds: ['S1'], now: past });
   await releaseExpiredHoldsCore(db);
-  expect(await confirmPaymentCore(db, signer, { orderId, providerRef: 'late', amountMinor: totalMinor })).toEqual({ refundDue: true });
+  expect(await confirmPaymentCore(db, signer, { orderId, providerRef: `late-${orderId}`, amountMinor: totalMinor })).toEqual({ refundDue: true });
   expect(await ticketCount(orderId)).toBe(0);
 });
 

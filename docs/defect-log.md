@@ -12,6 +12,7 @@ Severity: S1 critical, S2 major, S3 moderate, S4 minor. Only defects that really
 | DEF-006 | Automatic refund records are not listed on the manager Refunds screen | Exploratory | S2 | Screen shows only requested refunds | Backlog item | Open |
 | DEF-007 | A repeat scan of the same QR within 3 seconds is ignored, so the previous result stays on screen | Exploratory | S3 | Deliberate debounce | Show a "duplicate within 3 seconds" notice | Open |
 
-Metrics to report: defects by severity, open versus closed, defect density (defects per KLOC, see reports/metrics.md).
-
 | DEF-008 | Integration test IT-RES-01 failed with a 5-second timeout | Running `npm run test:int` on 22 Nov 2026 | S4 | Default Jest timeout too short for 10 concurrent transactions against a freshly started emulator; the other 18 integration tests passed, including all CR-01 transfer tests | Set testTimeout to 30000 in jest.int.config.js | Closed after re-run |
+| DEF-009 | Integration tests passed on a fresh emulator but 4 of 19 failed on every repeat run against the same emulator | Running `npm run test:int` repeatedly on 23-24 Nov 2026 | S4 | Tests used fixed data: user ids u1 and u9 (leftover pending holds hit the per-user hold limit) and fixed payment references p, r1, r2 and late (a repeated reference was treated as already handled) | Each run now generates unique user ids and per-order payment references | Closed (4 consecutive runs, 19 of 19 passed on the same emulator) |
+
+Metrics to report: defects by severity, open versus closed, defect density (defects per KLOC, see reports/metrics.md).
