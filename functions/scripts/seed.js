@@ -38,16 +38,23 @@ const VENUES = [
 
 // Fictional teams and athletes. days = days from now, hour = start time.
 const MATCHES = [
-  { id: 'match-001', venue: 'stadium-main', sport: 'football', home: 'Home FC', away: 'Away United', days: 7, hour: 16 },
-  { id: 'match-002', venue: 'stadium-main', sport: 'football', home: 'City SC', away: 'Rovers', days: 14, hour: 18 },
-  { id: 'match-101', venue: 'arena-basketball', sport: 'basketball', home: 'Lagos Lions', away: 'Abuja Eagles', days: 3, hour: 19 },
-  { id: 'match-102', venue: 'arena-basketball', sport: 'basketball', home: 'Kano Kings', away: 'Ibadan Hawks', days: 10, hour: 18 },
-  { id: 'match-201', venue: 'hall-volleyball', sport: 'volleyball', home: 'Delta Spikers', away: 'Coastal Smashers', days: 4, hour: 17 },
-  { id: 'match-202', venue: 'hall-volleyball', sport: 'volleyball', home: 'Capital Blockers', away: 'Northern Aces', days: 11, hour: 15 },
-  { id: 'match-301', venue: 'hall-tabletennis', sport: 'table-tennis', home: 'A. Bello', away: 'C. Okafor', days: 5, hour: 14 },
-  { id: 'match-302', venue: 'hall-tabletennis', sport: 'table-tennis', home: 'T. Adeyemi', away: 'M. Yusuf', days: 12, hour: 11 },
-  { id: 'match-401', venue: 'arena-boxing', sport: 'boxing', home: 'Iron Tunde', away: 'Kid Lagos', days: 9, hour: 20 },
-  { id: 'match-402', venue: 'arena-boxing', sport: 'boxing', home: 'Blaze Musa', away: 'Thunder Emeka', days: 16, hour: 20 },
+  { id: 'match-001', venue: 'stadium-main', sport: 'football', home: 'Arsenal', away: 'Chelsea', days: 7, hour: 16 },
+  { id: 'match-002', venue: 'stadium-main', sport: 'football', home: 'Real Madrid', away: 'Barcelona', days: 14, hour: 18 },
+  { id: 'match-003', venue: 'stadium-main', sport: 'football', home: 'Manchester City', away: 'Liverpool', days: 21, hour: 17 },
+  { id: 'match-004', venue: 'stadium-main', sport: 'football', home: 'Bayern Munich', away: 'Borussia Dortmund', days: 28, hour: 19 },
+  { id: 'match-005', venue: 'stadium-main', sport: 'football', home: 'Paris Saint-Germain', away: 'Juventus', days: 35, hour: 20 },
+  { id: 'match-101', venue: 'arena-basketball', sport: 'basketball', home: 'Los Angeles Lakers', away: 'Boston Celtics', days: 3, hour: 19 },
+  { id: 'match-102', venue: 'arena-basketball', sport: 'basketball', home: 'Chicago Bulls', away: 'Golden State Warriors', days: 10, hour: 18 },
+  { id: 'match-103', venue: 'arena-basketball', sport: 'basketball', home: 'Miami Heat', away: 'New York Knicks', days: 17, hour: 20 },
+  { id: 'match-201', venue: 'hall-volleyball', sport: 'volleyball', home: 'Zenit Kazan', away: 'Trentino Itas', days: 4, hour: 17 },
+  { id: 'match-202', venue: 'hall-volleyball', sport: 'volleyball', home: 'Sada Cruzeiro', away: 'Perugia', days: 11, hour: 15 },
+  { id: 'match-203', venue: 'hall-volleyball', sport: 'volleyball', home: 'Modena', away: 'Resovia', days: 18, hour: 16 },
+  { id: 'match-301', venue: 'hall-tabletennis', sport: 'table-tennis', home: 'A. Novak', away: 'C. Silva', days: 5, hour: 14 },
+  { id: 'match-302', venue: 'hall-tabletennis', sport: 'table-tennis', home: 'T. Kim', away: 'M. Rossi', days: 12, hour: 11 },
+  { id: 'match-303', venue: 'hall-tabletennis', sport: 'table-tennis', home: 'J. Weber', away: 'P. Costa', days: 19, hour: 13 },
+  { id: 'match-401', venue: 'arena-boxing', sport: 'boxing', home: 'Iron Marco', away: 'Kid Santos', days: 9, hour: 20 },
+  { id: 'match-402', venue: 'arena-boxing', sport: 'boxing', home: 'Blaze Jordan', away: 'Thunder Ivanov', days: 16, hour: 20 },
+  { id: 'match-403', venue: 'arena-boxing', sport: 'boxing', home: 'Steel Rivera', away: 'Crusher Dubois', days: 23, hour: 20 },
 ];
 
 function startAt(days, hour) {
