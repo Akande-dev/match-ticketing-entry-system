@@ -69,7 +69,7 @@ Write-Host ''
 Write-Host '=== READY. The demo is open in your browser at http://localhost:5173 ===' -ForegroundColor Green
 Write-Host ''
 Write-Host 'Demo accounts (password for all: Demo1234!)'
-Write-Host '  fan@demo.com      buys tickets, already owns 2 tickets for Home FC vs Away United'
+Write-Host '  fan@demo.com      buys tickets, already owns 2 tickets for Arsenal vs Chelsea'
 Write-Host '  friend@demo.com   second fan, receives a transferred ticket'
 Write-Host '  steward@demo.com  scans tickets at the gate'
 Write-Host '  manager@demo.com  matches, refunds, sales'
