@@ -12,18 +12,18 @@ Press Enter in the launcher window, or run `stop-demo.bat`.
 | Account | Role | Use |
 |---|---|---|
 | fan@demo.com | fan | Buys tickets; already owns 2 tickets |
-| friend@demo.com | fan | Receives a transferred ticket |
 | steward@demo.com | steward | Scans tickets at the gate |
-| manager@demo.com | manager | Matches, refunds, sales dashboard |
 | admin@demo.com | admin | All screens and the audit log |
+
+A demo bar at the top (Fan, Steward, Admin) signs in with these accounts in one click. For the transfer and no-double-sale steps, first register a second fan with the Register page using the email fan2@demo.com.
 
 ## Demo script (about 8 minutes)
 1. **Browse and buy (fan).** Log in as fan@demo.com. Open a match, pick two seats, Hold seats, Pay now, Simulate successful payment. Open My tickets and show the QR codes.
-2. **No double sale.** Open a private window, log in as friend@demo.com, open the same match and try to hold a seat the fan has already held. Show the "just taken" message.
+2. **No double sale.** Open a private window, log in as fan2@demo.com, open the same match and try to hold a seat the fan has already held. Show the "just taken" message.
 3. **Gate scan (steward).** Log in as steward@demo.com, open Scanner, choose Arsenal vs Chelsea. In a separate PowerShell window run `node functions/scripts/user-tools.js ticket fan@demo.com`, then click the Manual entry box, press Ctrl+V and press Check: green VALID. Wait 4 seconds and press Check again: red ALREADY USED with the first scan time and gate.
-4. **Ticket transfer (CR-01).** Before transferring, open a PowerShell window and run `node functions/scripts/user-tools.js ticket fan@demo.com`, which copies the QR text of the fan's ticket. Do not copy anything else. As fan@demo.com open My tickets, press Transfer to a friend, and enter friend@demo.com: the ticket shows TRANSFERRED. Now log in as steward@demo.com in a private window, open Scanner, paste the copied QR and press Check: red CANCELLED OR TRANSFERRED. Finally run `node functions/scripts/user-tools.js ticket friend@demo.com`, paste and check again: green VALID. This shows the old QR dies and the new one works.
-5. **Refund (manager).** As fan@demo.com request a refund on a ticket. Log in as manager@demo.com, open Manager, then Refunds, and approve. Show that the seat is free again.
-6. **Sales and audit.** As manager@demo.com show the Sales dashboard (tickets sold, revenue, entered). As admin@demo.com show the Audit log.
+4. **Ticket transfer (CR-01).** Before transferring, open a PowerShell window and run `node functions/scripts/user-tools.js ticket fan@demo.com`, which copies the QR text of the fan's ticket. Do not copy anything else. As fan@demo.com open My tickets, press Transfer to a friend, and enter fan2@demo.com: the ticket shows TRANSFERRED. Now log in as steward@demo.com in a private window, open Scanner, paste the copied QR and press Check: red CANCELLED OR TRANSFERRED. Finally run `node functions/scripts/user-tools.js ticket fan2@demo.com`, paste and check again: green VALID. This shows the old QR dies and the new one works.
+5. **Refund (manager).** As fan@demo.com request a refund on a ticket. Log in as admin@demo.com, open Manager, then Refunds, and approve. Show that the seat is free again.
+6. **Sales and audit.** As admin@demo.com show the Sales dashboard (tickets sold, revenue, entered). As admin@demo.com show the Audit log.
 7. **Evidence.** Show the GitHub repository, the passing tests (`npm test`), and docs/screenshots.md.
 
 ## Before presenting (checklist)
@@ -44,4 +44,4 @@ Press Enter in the launcher window, or run `stop-demo.bat`.
 ## Multi-sport part of the demo (CR-02)
 1. On the home page show the sport buttons grouped by category, then click Boxing and Table tennis.
 2. Buy a ticket for a boxing event as fan@demo.com. Show that the seat types and prices differ from football (Ringside, Floor, Balcony).
-3. As manager@demo.com open Manager: the Sales page shows sales by sport. Open Matches, New match, change the sport and show that the venue list and the side labels change.
+3. As admin@demo.com open Manager: the Sales page shows sales by sport. Open Matches, New match, change the sport and show that the venue list and the side labels change.

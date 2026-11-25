@@ -50,3 +50,8 @@ Deployment: not done. The system runs on the local emulators. A Firebase test pr
 |---|---|---|---|---|
 | TM-29 | Information disclosure | The transfer form reveals which emails have accounts | One generic message for unknown and disabled accounts; rate limit of 5 per minute; audit entry | Low |
 | TM-30 | Tampering / fraud | Transfers used for touting or laundering tickets | One transfer per ticket; recipient must be registered; closes 2 hours before kick-off; audit trail | Private resale by selling an account is accepted |
+
+
+## Demo role switcher (CR-06)
+The demo bar stores the emulator demo password in front-end code. It renders only when VITE_USE_EMULATORS is true, so it is for local emulator data only. It must not be used in a deployed system.
+

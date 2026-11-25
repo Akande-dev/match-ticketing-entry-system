@@ -19,6 +19,7 @@ import AuditLogPage from './features/admin/AuditLogPage';
 import AdminLayout from './features/admin/AdminLayout';
 import AdminOverviewPage from './features/admin/AdminOverviewPage';
 import UsersPage from './features/admin/UsersPage';
+import DemoSwitcher from './features/auth/DemoSwitcher';
 
 const STAFF = [ROLES.STEWARD, ROLES.ADMIN];
 const MANAGERS = [ROLES.MANAGER, ROLES.ADMIN];
@@ -85,6 +86,7 @@ function Footer() {
 export default function App() {
   return (
     <>
+      <DemoSwitcher />
       <NavBar />
       <Routes>
         <Route path="/" element={<MatchListPage />} />

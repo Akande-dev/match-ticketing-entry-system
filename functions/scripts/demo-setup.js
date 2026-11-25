@@ -23,10 +23,8 @@ function readEnv() {
 const PASSWORD = 'Demo1234!';
 const USERS = [
   { email: 'admin@demo.com', name: 'Demo Admin', role: 'admin' },
-  { email: 'manager@demo.com', name: 'Demo Manager', role: 'manager' },
   { email: 'steward@demo.com', name: 'Demo Steward', role: 'steward' },
   { email: 'fan@demo.com', name: 'Demo Fan', role: 'fan' },
-  { email: 'friend@demo.com', name: 'Demo Friend', role: 'fan' },
 ];
 
 (async () => {
