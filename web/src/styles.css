@@ -228,3 +228,29 @@ th, td { border-bottom: 1px solid var(--line); padding: 0.55rem; text-align: lef
 .page-tickets main button:nth-of-type(2) { background: linear-gradient(135deg, #2563eb, #7c3aed); }
 .page-tickets main button:disabled { opacity: 0.6; cursor: default; }
 @media (prefers-reduced-motion: reduce) { .sb-blob, .sb-icon { animation: none; } }
+
+/* ===== CR-12: dark gate scanner with sample scan buttons ===== */
+.scn { background: #0b1120; color: #e5e7eb; border-radius: 20px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); }
+.scn h1, .scn h2 { color: #fff; margin-top: 0; }
+.scn-head { display: flex; gap: 1rem; justify-content: space-between; flex-wrap: wrap; border-bottom: 1px solid #1f2a44; padding-bottom: 1rem; margin-bottom: 1rem; }
+.scn-head p { margin: 0; color: #94a3b8; }
+.scn-controls { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.scn select, .scn input { background: #111a2e; color: #e5e7eb; border: 1px solid #2b3a5c; border-radius: 10px; padding: 0.55rem 0.7rem; }
+.scn label { color: #94a3b8; font-size: 0.85rem; }
+.scn-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
+@media (max-width: 800px) { .scn-grid { grid-template-columns: 1fr; } }
+.scn-panel { background: #0f172a; border: 1px solid #1f2a44; border-radius: 16px; padding: 1rem; }
+.scn-reticle { position: relative; min-height: 14rem; display: flex; align-items: center; justify-content: center; text-align: center; border: 2px dashed #14b8a6; border-radius: 16px; margin-bottom: 0.8rem; color: #5eead4; letter-spacing: 0.08em; font-size: 0.8rem; }
+.scn-reticle small { display: block; color: #64748b; letter-spacing: 0; margin-top: 0.3rem; }
+.scn-reticle.on { border-style: solid; }
+.scn-btn { border: 0; border-radius: 999px; padding: 0.55rem 1.1rem; font-weight: 700; color: #fff; background: #1e293b; cursor: pointer; margin: 0.2rem 0.3rem 0.2rem 0; }
+.scn-btn:disabled { opacity: 0.45; cursor: default; }
+.sim-green { background: #16a34a; } .sim-red { background: #dc2626; } .sim-amber { background: #d97706; } .sim-purple { background: #7c3aed; } .sim-blue { background: #2563eb; }
+.scn-note { color: #94a3b8; font-size: 0.8rem; margin: 0.8rem 0 0.3rem; }
+.scn-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+.scn-stats div { background: #111a2e; border-radius: 12px; padding: 0.6rem; text-align: center; }
+.scn-stats small { display: block; color: #94a3b8; font-size: 0.7rem; }
+.scn-stats b { font-size: 1.6rem; color: #fff; } .scn-stats .g { color: #4ade80; } .scn-stats .r { color: #f87171; }
+.scn-result { margin-top: 1rem; border-radius: 16px; padding: 1rem 1.25rem; font-size: 1.1rem; color: #fff; }
+.scn-result.ok { background: #15803d; } .scn-result.warn { background: #b45309; } .scn-result.bad { background: #b91c1c; }
+.scn-result p { margin: 0.3rem 0 0; }

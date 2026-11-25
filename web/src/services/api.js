@@ -24,3 +24,5 @@ export const setUserRole = call('setUserRole');
 export const setUserDisabled = call('setUserDisabled');
 
 export const findTicketByNumber = call('findTicketByNumber');
+
+export const demoScan = call('demoScan');
