@@ -35,3 +35,10 @@ exports.transferTicket = callable(null,
     uid: auth.uid, ticketId: data.ticketId, recipientEmail: data.recipientEmail,
   }),
   { rateLimit: { action: 'transfer', limit: 5, windowMs: 60_000 } });
+
+const { findTicketByNumberCore } = require('./ticketLookup');
+
+// Staff search: find a ticket by its number (steward and admin only, rate limited).
+exports.findTicketByNumber = callable(['steward', 'admin'],
+  ({ data, db }) => findTicketByNumberCore(db, data.ticketNumber),
+  { rateLimit: { action: 'ticketLookup', limit: 30, windowMs: 60_000 } });

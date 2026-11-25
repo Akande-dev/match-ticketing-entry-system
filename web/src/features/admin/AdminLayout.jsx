@@ -9,6 +9,7 @@ export default function AdminLayout() {
       <nav aria-label="Admin sections" className="subnav">
         <NavLink to="/admin" end>Overview</NavLink>
         <NavLink to="/admin/users">Users</NavLink>
+        <NavLink to="/admin/tickets">Tickets</NavLink>
         <NavLink to="/admin/audit">Audit log</NavLink>
       </nav>
       <Outlet />

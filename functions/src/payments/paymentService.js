@@ -5,6 +5,7 @@
 const { FieldValue } = require('firebase-admin/firestore');
 const { DomainError } = require('../shared/errors');
 const { writeAudit } = require('../shared/audit');
+const { generateTicketNumber } = require('../tickets/ticketNumber');
 
 /** Records that money is owed back. The id comes from the gateway reference, so replays are harmless. */
 function recordRefundDue(tx, db, { providerRef, orderId, order, amountMinor, reason }) {
@@ -85,11 +86,14 @@ async function confirmPaymentCore(db, signer, { orderId, providerRef, amountMino
 
       // One ticket per seat. The QR payload is HMAC-signed so it cannot be forged.
       const ticketRef = db.collection('tickets').doc();
+      // Human-readable number. The registry document makes a duplicate number fail the transaction.
+      const ticketNumber = generateTicketNumber();
+      tx.create(db.collection('ticketNumbers').doc(ticketNumber), { ticketId: ticketRef.id });
       tx.set(ticketRef, {
         orderId, userId: order.userId, matchId: order.matchId, matchLabel,
         kickoff: matchData.kickoff, sport: matchData.sport ?? null, seatId: s.id, seatLabel: label, category,
         priceMinor: priceBySeat.get(s.id) ?? null,
-        status: 'Valid', qrPayload: signer.sign(ticketRef.id, order.matchId),
+        status: 'Valid', ticketNumber, qrPayload: signer.sign(ticketRef.id, order.matchId),
         usedAt: null, usedGate: null, createdAt: FieldValue.serverTimestamp(),
       });
     });

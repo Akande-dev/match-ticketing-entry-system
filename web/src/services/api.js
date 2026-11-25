@@ -22,3 +22,5 @@ export const transferTicket = call('transferTicket');
 export const listUsers = call('listUsers');
 export const setUserRole = call('setUserRole');
 export const setUserDisabled = call('setUserDisabled');
+
+export const findTicketByNumber = call('findTicketByNumber');

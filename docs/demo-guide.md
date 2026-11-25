@@ -45,3 +45,7 @@ The login page is the first page. In demo mode it lists these accounts as button
 1. On the home page show the sport buttons grouped by category, then click Boxing and Table tennis.
 2. Buy a ticket for a boxing event as fan@demo.com. Show that the seat types and prices differ from football (Ringside, Floor, Balcony).
 3. As admin@demo.com open Manager: the Sales page shows sales by sport. Open Matches, New match, change the sport and show that the venue list and the side labels change.
+
+## Ticket numbers (CR-09)
+Every ticket has a number such as TKT-7K4M9Q2X, shown on My tickets. As steward (Scanner page) or admin (Admin > Tickets) type it into Find a ticket by number to see its status, seat and first scan. The lookup never admits a ticket.
+

@@ -5,6 +5,7 @@ const { DomainError } = require('../shared/errors');
 const { requireString } = require('../shared/validation');
 const { writeAudit } = require('../shared/audit');
 const { checkTransferEligibility } = require('./transferLogic');
+const { generateTicketNumber } = require('./ticketNumber');
 
 // A simple shape check only; whether the account exists is checked against the users collection.
 const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -43,10 +44,15 @@ async function transferTicketCore(db, signer, { uid, ticketId, recipientEmail, n
 
     // New id and new QR code, so the previous holder's QR stops working immediately.
     const newRef = db.collection('tickets').doc();
+    // The new ticket gets its own number, so a search never finds two live tickets.
+    const newNumber = generateTicketNumber();
+    tx.create(db.collection('ticketNumbers').doc(newNumber), { ticketId: newRef.id });
     tx.set(newRef, {
       ...ticket,
       userId: recipient.id,
       status: 'Valid',
+      ticketNumber: newNumber,
+      previousTicketNumber: ticket.ticketNumber ?? null,
       qrPayload: signer.sign(newRef.id, ticket.matchId),
       usedAt: null,
       usedGate: null,

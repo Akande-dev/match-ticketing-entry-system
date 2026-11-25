@@ -8,6 +8,7 @@ import { db } from '../../services/firebase';
 import { validateTicket } from '../../services/api';
 import { useLiveQuery } from '../../hooks/useLiveQuery';
 import { sportEmoji } from '../../utils/sports';
+import TicketLookup from '../common/TicketLookup';
 
 // Text shown for each server result.
 const MESSAGES = {
@@ -80,6 +81,7 @@ export default function ScannerPage() {
           )}
         </section>
       )}
+    <TicketLookup />
     </main>
   );
 }

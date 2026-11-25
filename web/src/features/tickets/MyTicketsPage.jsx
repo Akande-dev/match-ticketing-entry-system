@@ -72,6 +72,7 @@ export default function MyTicketsPage() {
             <li key={t.id} className="card">
               <h2>{sportEmoji(t.sport)} {t.matchLabel}</h2>
               <p>{t.seatLabel}</p>
+              {t.ticketNumber && <p>Ticket no: <strong>{t.ticketNumber}</strong></p>}
               {t.status === 'Valid' && <QRCodeSVG value={t.qrPayload} size={180} />}
               <p>Status: <strong>{t.status.toUpperCase()}</strong></p>
               {t.transferredFrom && <p>Received by transfer.</p>}

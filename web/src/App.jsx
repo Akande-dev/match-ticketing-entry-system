@@ -25,6 +25,7 @@ import SportBackground from './features/common/SportBackground';
 import AdminLayout from './features/admin/AdminLayout';
 import AdminOverviewPage from './features/admin/AdminOverviewPage';
 import UsersPage from './features/admin/UsersPage';
+import TicketLookup from './features/common/TicketLookup';
 
 // Role groups used by the guards and the navigation links.
 const STAFF = [ROLES.STEWARD, ROLES.ADMIN];
@@ -120,6 +121,7 @@ export default function App() {
         <Route path="/admin" element={guard(<AdminLayout />, [ROLES.ADMIN])}>
           <Route index element={<AdminOverviewPage />} />
           <Route path="users" element={<UsersPage />} />
+          <Route path="tickets" element={<TicketLookup />} />
           <Route path="audit" element={<AuditLogPage />} />
         </Route>
       </Routes>
