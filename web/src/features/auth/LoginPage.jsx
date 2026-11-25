@@ -1,3 +1,6 @@
+// Login page: the first page a visitor sees. After login each role is sent to its own area.
+// In emulator (demo) mode it also shows buttons that fill in the demo accounts.
+
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -37,12 +40,14 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
+  // Once the user and role are known, go back to the page they wanted or to their role's home.
   useEffect(() => {
     if (!user) return;
     const from = location.state?.from?.pathname;
     navigate(from && from !== '/' ? from : (HOME[role] ?? '/'), { replace: true });
   }, [user, role, navigate, location.state]);
 
+  // Signs in; the effect above then performs the redirect. Errors show a generic message.
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');

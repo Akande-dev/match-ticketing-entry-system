@@ -1,3 +1,5 @@
+// Checkout: shows the held seats with a countdown, then starts payment or cancels the hold.
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { doc, onSnapshot } from 'firebase/firestore';
@@ -5,6 +7,7 @@ import { db } from '../../services/firebase';
 import { cancelOrder, createCheckout, verifyPayment } from '../../services/api';
 import { formatMoney } from '../../utils/money';
 
+// Formats milliseconds as mm:ss for the hold countdown.
 const clock = (ms) => {
   const s = Math.ceil(ms / 1000);
   return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
@@ -20,10 +23,12 @@ export default function CheckoutPage() {
   const [now, setNow] = useState(Date.now());
   const returned = params.has('reference') || params.has('trxref');
 
+  // Live view of the order, so the page reacts when payment completes or the hold expires.
   useEffect(() => onSnapshot(doc(db, 'orders', orderId),
     (s) => setOrder(s.exists() ? { id: s.id, ...s.data() } : null), () => setError('Order not found.')), [orderId]);
   useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
   useEffect(() => { if (order?.status === 'Paid') navigate('/my-tickets', { replace: true }); }, [order, navigate]);
+  // Back from the payment provider: ask the server to confirm the payment.
   useEffect(() => { if (returned) verifyPayment({ orderId }).catch(() => {}); }, [orderId, returned]);
 
   if (error) return <main><p role="alert">{error}</p></main>;
@@ -32,6 +37,7 @@ export default function CheckoutPage() {
 
   const remaining = Math.max(0, order.holdExpiresAt.toMillis() - now);
 
+  // Asks the server for a payment page, then goes there (the mock page or the real provider).
   async function handlePay() {
     setBusy(true);
     setError('');
@@ -44,6 +50,7 @@ export default function CheckoutPage() {
       setBusy(false);
     }
   }
+  // Gives the seats back to other buyers.
   async function handleCancel() {
     await cancelOrder({ orderId });
     navigate('/', { replace: true });

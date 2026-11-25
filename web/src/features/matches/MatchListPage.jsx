@@ -1,3 +1,5 @@
+// Home page for logged-in users: hero banner, next event, sport tiles, event cards and the 'why buy' section.
+
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, orderBy, query, where } from 'firebase/firestore';
@@ -7,14 +9,17 @@ import { formatMoney } from '../../utils/money';
 import { ICON } from '../../utils/icons';
 import { SPORTS, SPORT_IDS, sportEmoji, sportLabel, sportOf } from '../../utils/sports';
 
+// Date and time formatting for event cards.
 const dateText = (d) => d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
 const timeText = (d) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+// Short selling points shown in the hero.
 const PERKS = [
   { icon: ICON.phone, title: 'Instant QR ticket', text: 'On your phone' },
   { icon: ICON.lock, title: 'Secure checkout', text: 'Safe payments' },
   { icon: ICON.check, title: 'One-time entry', text: 'No fake tickets' },
 ];
+// Longer list shown near the bottom of the page.
 const WHY = [
   { icon: ICON.shield, title: 'Signed QR tickets', text: 'Every ticket is digitally signed' },
   { icon: ICON.check, title: 'No double sales', text: 'A seat can only be sold once' },
@@ -32,11 +37,13 @@ export default function MatchListPage() {
   if (loading) return <main className="home"><div className="wrap"><p>Loading events…</p></div></main>;
   if (error) return <main className="home"><div className="wrap"><p role="alert">{error}</p></div></main>;
 
+  // Events come live from Firestore (only those On sale); 'filter' narrows them by sport.
   const matches = docs.map((m) => ({ ...m, sport: sportOf(m) }));
   const next = matches[0];
   const count = (id) => matches.filter((m) => m.sport === id).length;
   const shown = filter === 'all' ? matches : matches.filter((m) => m.sport === filter);
 
+  // Clicking a sport tile filters the list and scrolls down to it.
   function pick(id) {
     setFilter(id);
     eventsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });

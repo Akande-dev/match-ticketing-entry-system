@@ -1,3 +1,5 @@
+// Manager form to create or edit a draft event: sport, venue, the two sides, start time and prices.
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
@@ -5,7 +7,9 @@ import { db } from '../../services/firebase';
 import { saveMatch } from '../../services/api';
 import { GROUPS, SPORTS, sportsInGroup } from '../../utils/sports';
 
+// Starting values for a new event.
 const EMPTY = { sport: 'football', stadiumId: '', homeTeam: '', awayTeam: '', kickoff: '', prices: {} };
+// Converts a time in milliseconds to the text a datetime-local input expects.
 const toLocalInput = (ms) => new Date(ms - new Date(ms).getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 
 export default function MatchFormPage() {
@@ -40,18 +44,21 @@ export default function MatchFormPage() {
     })();
   }, [matchId]);
 
+  // Labels and venues depend on the chosen sport (for example 'Fighter 1' for boxing).
   const sides = SPORTS[form.sport]?.sides ?? ['Home team', 'Away team'];
   const venues = stadiums.filter((s) => !s.sport || s.sport === form.sport);
   const setField = (field) => (e) => setForm({ ...form, [field]: e.target.value });
   const setPrice = (c) => (e) => setForm({ ...form, prices: { ...form.prices, [c]: e.target.value } });
   const changeSport = (e) => setForm({ ...form, sport: e.target.value, stadiumId: '', prices: {} });
 
+  // Sends the form to the server, which validates everything again.
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
     setBusy(true);
     try {
       const prices = {};
+      // Prices are typed in naira but stored in kobo (x100).
       categories.forEach((c) => { prices[c] = Math.round(Number(form.prices[c]) * 100); });
       await saveMatch({ matchId, input: {
         sport: form.sport, stadiumId: form.stadiumId, homeTeam: form.homeTeam, awayTeam: form.awayTeam,

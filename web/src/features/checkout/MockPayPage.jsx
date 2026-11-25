@@ -1,3 +1,5 @@
+// Development-only payment page. It simulates a successful or failed payment; no real money moves.
+
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { simulateMockPayment } from '../../services/api';
@@ -9,6 +11,7 @@ export default function MockPayPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
+  // outcome is 'success' or 'failure'; the server decides what happens to the order.
   async function run(outcome) {
     setBusy(true);
     setError('');

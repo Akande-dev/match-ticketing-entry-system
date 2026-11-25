@@ -1,7 +1,10 @@
+// Admin overview: counts of accounts by role, taken from the admin-only listUsers function.
+
 import { useEffect, useState } from 'react';
 import { listUsers } from '../../services/api';
 
 export default function AdminOverviewPage() {
+  // null means 'still loading'; the effect below fills it in once.
   const [users, setUsers] = useState(null);
   const [error, setError] = useState('');
 

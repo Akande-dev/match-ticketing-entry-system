@@ -1,3 +1,5 @@
+// Manager list of events with Edit, Publish and Cancel actions.
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, orderBy, query } from 'firebase/firestore';
@@ -11,6 +13,7 @@ export default function MatchAdminPage() {
   const [busyId, setBusyId] = useState('');
   const [message, setMessage] = useState('');
 
+  // Runs a server action on one event, optionally asking the manager to confirm first.
   async function run(action, matchId, confirmText) {
     if (confirmText && !window.confirm(confirmText)) return;
     setBusyId(matchId);

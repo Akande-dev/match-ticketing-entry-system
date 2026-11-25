@@ -1,7 +1,11 @@
+// Admin Users page: list accounts, change a role, enable or disable an account.
+// All changes go through Cloud Functions, which check the caller is an admin and write an audit entry.
+
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import { listUsers, setUserRole, setUserDisabled } from '../../services/api';
 
+// Roles an admin can assign.
 const ROLE_LIST = ['fan', 'steward', 'manager', 'admin'];
 
 export default function UsersPage() {
@@ -11,6 +15,7 @@ export default function UsersPage() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState('');
 
+  // Fetches the account list from the server; called on open and after every change.
   const load = useCallback(async () => {
     try {
       const res = await listUsers({});
@@ -25,6 +30,7 @@ export default function UsersPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  // Runs one action for one user, disables that row meanwhile, then reloads the list.
   async function run(uid, fn) {
     setBusy(uid);
     setError('');
@@ -43,6 +49,7 @@ export default function UsersPage() {
         <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
         <tbody>
           {users.map((u) => {
+            // Your own row is read-only; the server also refuses self-changes.
             const self = u.uid === user?.uid;
             return (
               <tr key={u.uid}>

@@ -1,8 +1,12 @@
+// Decorative moving sport background, shown only on the checkout, payment and My tickets pages.
+
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SPORT_IDS, sportEmoji } from '../../utils/sports';
 
+// Pages that get the background.
 const PATHS = ['/checkout', '/mock-pay', '/my-tickets'];
+// Position (l, t), size (s), delay (d) and duration (du) of each floating icon.
 const ICONS = [
   { l: '5%', t: '14%', s: '3.4rem', d: '0s', du: '11s' },
   { l: '17%', t: '72%', s: '2.8rem', d: '1.4s', du: '13s' },
@@ -21,6 +25,7 @@ export default function SportBackground() {
   const on = PATHS.some((p) => pathname.startsWith(p));
   const tickets = pathname.startsWith('/my-tickets');
 
+  // Adds CSS classes to the page body so the stylesheet can colour the page to match.
   useEffect(() => {
     document.body.classList.toggle('has-sport-bg', on);
     document.body.classList.toggle('page-tickets', tickets);
