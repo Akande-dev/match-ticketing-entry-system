@@ -1,3 +1,6 @@
+// Real payment gateway (Paystack, amounts in kobo). Only used when PAYMENT_PROVIDER=paystack.
+// Not tested against the live Paystack sandbox in this project; unit tests use a fake HTTP client.
+
 const crypto = require('crypto');
 const { PaymentGateway } = require('./PaymentGateway');
 const { DomainError } = require('../shared/errors');
@@ -12,6 +15,7 @@ class PaystackGateway extends PaymentGateway {
     this.baseUrl = baseUrl;
   }
 
+  // Asks Paystack for a payment page URL for this order.
   async createCheckout(order) {
     // A fresh reference per attempt: Paystack rejects a reused reference.
     const reference = `${order.id}-${Date.now().toString(36)}`;
@@ -34,6 +38,7 @@ class PaystackGateway extends PaymentGateway {
     return { checkoutUrl: json.data.authorization_url, providerRef: json.data.reference };
   }
 
+  // Checks the HMAC-SHA512 signature in constant time, so only Paystack can confirm a payment.
   verifyWebhook(headers, rawBody) {
     const expected = crypto.createHmac('sha512', this.secretKey).update(rawBody).digest('hex');
     const given = String(headers['x-paystack-signature'] ?? '');
@@ -55,6 +60,7 @@ class PaystackGateway extends PaymentGateway {
     };
   }
 
+  // Asks Paystack directly about a payment; the fallback when a webhook is slow or lost.
   async verifyTransaction(reference) {
     const res = await this.http(`${this.baseUrl}/transaction/verify/${encodeURIComponent(reference)}`, {
       headers: { Authorization: `Bearer ${this.secretKey}` },

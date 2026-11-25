@@ -1,3 +1,6 @@
+// Firestore storage for tickets, behind a small interface so the validator can be unit tested
+// with a fake repository.
+
 class FirestoreTicketRepository {
   constructor(db) { this.db = db; }
 

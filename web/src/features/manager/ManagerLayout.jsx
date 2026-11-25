@@ -1,3 +1,5 @@
+// Shell for the manager console: title, sub-navigation (Sales, Matches, Refunds) and the page below.
+
 import { NavLink, Outlet } from 'react-router-dom';
 
 export default function ManagerLayout() {

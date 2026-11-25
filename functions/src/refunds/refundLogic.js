@@ -1,3 +1,5 @@
+// Pure refund eligibility rules (no database access, so easy to unit test).
+
 const REFUND_CUTOFF_MS = 48 * 60 * 60 * 1000; // refunds close 48 hours before kick-off
 
 /** @returns {{ok: boolean, reason: string}} */

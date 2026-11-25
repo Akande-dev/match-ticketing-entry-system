@@ -1,3 +1,6 @@
+// Fake gateway for local development and tests. It has the same interface as the real
+// gateway (Strategy pattern), so the rest of the code does not care which one is used.
+
 const { PaymentGateway } = require('./PaymentGateway');
 
 /** Development and test double. Never enabled unless ALLOW_MOCK_PAYMENTS=true. */
@@ -17,6 +20,7 @@ class MockGateway extends PaymentGateway {
     };
   }
 
+  // The mock never confirms by itself; payment is simulated through simulateMockPayment.
   async verifyTransaction() { return { status: 'pending' }; }
 }
 

@@ -1,3 +1,5 @@
+// Manager list of pending refund requests, with Approve and Reject.
+
 import { useState } from 'react';
 import { collection, orderBy, query, where } from 'firebase/firestore';
 import { db } from '../../services/firebase';
@@ -10,6 +12,7 @@ export default function RefundsPage() {
     () => query(collection(db, 'refunds'), where('status', '==', 'Requested'), orderBy('createdAt', 'desc')), []);
   const [message, setMessage] = useState('');
 
+  // Rejecting asks for a reason that the fan will see.
   async function decide(ticketId, decision) {
     const note = decision === 'reject' ? window.prompt('Reason for rejecting (shown to the fan):') ?? '' : '';
     setMessage('');

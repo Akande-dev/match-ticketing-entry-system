@@ -1,3 +1,5 @@
+// Manager sales dashboard: totals by sport, then details for one chosen event.
+
 import { useEffect, useState } from 'react';
 import { collection, doc, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../../services/firebase';
@@ -5,6 +7,7 @@ import { useLiveQuery } from '../../hooks/useLiveQuery';
 import { formatMoney } from '../../utils/money';
 import { SPORT_IDS, sportEmoji, sportLabel, sportOf } from '../../utils/sports';
 
+// Turns an object of counts into sorted [key, value] pairs for display.
 const entries = (o) => Object.entries(o ?? {}).sort(([a], [b]) => a.localeCompare(b));
 
 export default function SalesDashboardPage() {
@@ -18,6 +21,7 @@ export default function SalesDashboardPage() {
     return onSnapshot(doc(db, 'stats', matchId), (s) => setStats(s.exists() ? s.data() : {}));
   }, [matchId]);
 
+  // Adds up events, tickets sold, revenue and entries for each sport.
   const statsById = new Map(allStats.map((s) => [s.id, s]));
   const bySport = new Map();
   matches.forEach((m) => {

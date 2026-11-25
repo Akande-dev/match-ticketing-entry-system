@@ -1,3 +1,6 @@
+// Event page: shows the ticket types with seats left, a live seat map, and holds the chosen seats.
+// Seat data updates live, so other buyers' holds and sales appear without refreshing.
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { collection, doc, onSnapshot } from 'firebase/firestore';
@@ -7,9 +10,13 @@ import { formatMoney } from '../../utils/money';
 import { ICON } from '../../utils/icons';
 import { sportEmoji, sportLabel } from '../../utils/sports';
 
+// Same limit as the server (reservationLogic.js); the server checks it again.
 const MAX_SEATS = 6;
+// Symbol drawn on each seat button for each state.
 const SYMBOL = { available: '○', selected: '✓', held: '◐', sold: '×' };
 
+// Works out how a seat should look: sold, held by someone else (hold not yet expired),
+// selected by this user, or available.
 function seatState(seat, selected, nowMs) {
   let base = 'available';
   if (seat.status === 'Sold') base = 'sold';
@@ -17,6 +24,7 @@ function seatState(seat, selected, nowMs) {
   return selected && base === 'available' ? 'selected' : base;
 }
 
+// Seat ids end in -R<row>-S<number>; this reads them so seats can be sorted in order.
 function parseSeatId(id) {
   const m = /-R(\d+)-S(\d+)$/.exec(id);
   return m ? { row: Number(m[1]), number: Number(m[2]) } : { row: 0, number: 0 };
@@ -33,6 +41,7 @@ export default function MatchPage() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
 
+  // Three live listeners: the event, its seats and its prices. All are removed when leaving the page.
   useEffect(() => {
     const ref = doc(db, 'matches', matchId);
     const unsubs = [
@@ -50,6 +59,7 @@ export default function MatchPage() {
   if (loading) return <main><p>Loading…</p></main>;
   if (!match) return <main><p role="alert">Event not found.</p></main>;
 
+  // Group seats by section and count seats left per ticket type for the summary rows.
   const nowMs = Date.now();
   const when = match.kickoff.toDate();
   const sections = {};
@@ -64,8 +74,10 @@ export default function MatchPage() {
   Object.values(sections).forEach((sec) => sec.seats.sort((a, b) => a.row - b.row || a.number - b.number));
   const types = Object.entries(perType).sort(([a], [b]) => (prices[b] ?? 0) - (prices[a] ?? 0));
 
+  // Total price of the seats chosen so far (display only; the server calculates the real total).
   const total = [...selected].reduce((sum, id) => sum + (prices[seats.find((s) => s.id === id)?.category] ?? 0), 0);
 
+  // Selects or unselects a seat, up to the maximum per order.
   function toggle(seat) {
     setMessage('');
     const next = new Set(selected);
@@ -75,6 +87,8 @@ export default function MatchPage() {
     setSelected(next);
   }
 
+  // Asks the server to hold the chosen seats for 10 minutes, then opens checkout.
+  // If someone else got a seat first, the server refuses and the selection is cleared.
   async function handleHold() {
     setBusy(true);
     setMessage('');

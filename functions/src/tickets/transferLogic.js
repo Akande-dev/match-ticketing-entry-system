@@ -1,3 +1,5 @@
+// Pure rules for whether a ticket may be transferred (no database access, so easy to unit test).
+
 const TRANSFER_CUTOFF_MS = 2 * 60 * 60 * 1000; // transfers close 2 hours before kick-off
 const MAX_TRANSFERS = 1; // one transfer per ticket limits resale
 

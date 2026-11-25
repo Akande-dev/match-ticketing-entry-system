@@ -1,3 +1,5 @@
+// Hook that keeps a Firestore query live: the component re-renders whenever the data changes.
+
 import { useEffect, useState } from 'react';
 import { onSnapshot } from 'firebase/firestore';
 

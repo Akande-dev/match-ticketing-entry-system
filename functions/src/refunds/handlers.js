@@ -1,3 +1,5 @@
+// Cloud Function entry points for refunds: a fan requests one, a manager or admin decides it.
+
 const { callable } = require('../shared/callable');
 const { requestRefundCore, decideRefundCore } = require('./refundService');
 

@@ -150,3 +150,81 @@ th, td { border-bottom: 1px solid var(--line); padding: 0.55rem; text-align: lef
 .scan-result { margin-top: 1rem; padding: 1.5rem; border-radius: 8px; font-size: 1.25rem; color: #fff; }
 .scan-ok { background: #1a7f37; }
 .scan-bad { background: #b42318; }
+
+/* ===== CR-08: responsive layout, role colours and motion ===== */
+.nav-toggle { display: none; background: var(--navy, #0b1f44); color: #fff; border: 0; border-radius: 6px; font-size: 1.3rem; padding: 0.3rem 0.7rem; cursor: pointer; }
+.site-nav.role-fan { border-bottom: 4px solid #2563eb; }
+.site-nav.role-steward { border-bottom: 4px solid #16a34a; }
+.site-nav.role-manager { border-bottom: 4px solid #ea580c; }
+.site-nav.role-admin { border-bottom: 4px solid #7c3aed; }
+
+.hero { position: relative; }
+.hero-inner { z-index: 1; }
+.hero::before, .hero::after { content: ""; position: absolute; border-radius: 50%; filter: blur(60px); pointer-events: none; opacity: 0.55; }
+.hero::before { width: 28rem; height: 28rem; left: -8rem; top: -6rem; background: rgba(59, 130, 246, 0.55); animation: blob-a 14s ease-in-out infinite alternate; }
+.hero::after { width: 24rem; height: 24rem; right: -6rem; bottom: -8rem; background: rgba(225, 29, 46, 0.45); animation: blob-b 17s ease-in-out infinite alternate; }
+@keyframes blob-a { to { transform: translate(14rem, 6rem) scale(1.15); } }
+@keyframes blob-b { to { transform: translate(-12rem, -5rem) scale(1.2); } }
+.hero-art span { animation: float-icon 4s ease-in-out infinite; }
+.hero-art span:nth-child(2) { animation-delay: 0.6s; }
+.hero-art span:nth-child(3) { animation-delay: 1.2s; }
+.hero-art span:nth-child(4) { animation-delay: 1.8s; }
+.hero-art span:nth-child(5) { animation-delay: 2.4s; }
+@keyframes float-icon { 50% { translate: 0 -14px; } }
+
+@media (max-width: 760px) {
+  .nav-toggle { display: inline-block; margin-left: auto; }
+  .nav-links { display: none; flex-basis: 100%; order: 5; flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+  .nav-links.open { display: flex; }
+  .hero { padding: 2rem 0 4rem; }
+  .tiles { grid-template-columns: repeat(2, 1fr); }
+  table { display: block; max-width: 100%; overflow-x: auto; }
+}
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero::before, .hero::after { filter: blur(40px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero::before, .hero::after, .hero-art span { animation: none; }
+}
+
+/* ===== CR-10: centred, rounded login card with moving sport background ===== */
+.auth-page { position: relative; display: flex; align-items: center; justify-content: center; min-height: 70vh; max-width: none; margin: 0; padding: 2.5rem 1rem; overflow: hidden; background: linear-gradient(135deg, #0b1f44, #1d4ed8 45%, #7c3aed 75%, #e11d2e); background-size: 200% 200%; animation: auth-shift 18s ease-in-out infinite alternate; }
+@keyframes auth-shift { to { background-position: 100% 100%; } }
+.auth-bg { position: absolute; inset: 0; pointer-events: none; }
+.floater { position: absolute; left: var(--l); top: var(--t); font-size: var(--s); opacity: 0.8; filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35)); animation: auth-drift var(--du) ease-in-out var(--d) infinite; }
+@keyframes auth-drift { 0%, 100% { translate: 0 0; rotate: 0deg; } 50% { translate: 24px -46px; rotate: 18deg; } }
+.auth-card { position: relative; z-index: 1; width: 100%; max-width: 26rem; background: #fff; border-radius: 20px; padding: 2rem 1.75rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35); }
+.auth-card h1 { margin: 0 0 0.25rem; text-align: center; }
+.auth-sub { text-align: center; color: #5b6478; margin: 0 0 1.25rem; font-size: 0.95rem; }
+.auth-card label { display: block; margin: 0.8rem 0 0.3rem; font-weight: 600; }
+.auth-card input { width: 100%; box-sizing: border-box; border-radius: 10px; padding: 0.7rem 0.8rem; border: 1px solid #c9d1e3; }
+.auth-card button[type="submit"] { width: 100%; margin-top: 1.1rem; padding: 0.8rem; border: 0; border-radius: 10px; background: #0b1f44; color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; }
+.auth-card button[type="submit"]:disabled { opacity: 0.6; cursor: default; }
+.auth-error { color: #b91c1c; margin: 0.6rem 0 0; }
+.auth-alt { text-align: center; margin: 1rem 0 0; }
+.demo-box { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px dashed #c9d1e3; text-align: center; }
+.demo-row { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.5rem; flex-wrap: wrap; }
+.demo-pill { border: 0; border-radius: 999px; padding: 0.4rem 1rem; color: #fff; font-weight: 700; cursor: pointer; }
+.demo-fan { background: #2563eb; }
+.demo-steward { background: #16a34a; }
+.demo-admin { background: #7c3aed; }
+@media (prefers-reduced-motion: reduce) { .auth-page, .floater { animation: none; } }
+
+/* ===== CR-11: moving blurred sport background and coloured ticket buttons ===== */
+.sport-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: linear-gradient(135deg, #dbeafe, #fce7f3 50%, #fef3c7); }
+.sb-blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; }
+.sb-blob-a { width: 26rem; height: 26rem; left: -6rem; top: -4rem; background: #3b82f6; animation: sb-blob-a 15s ease-in-out infinite alternate; }
+.sb-blob-b { width: 24rem; height: 24rem; right: -5rem; bottom: -6rem; background: #f43f5e; animation: sb-blob-b 18s ease-in-out infinite alternate; }
+@keyframes sb-blob-a { to { transform: translate(16rem, 8rem) scale(1.15); } }
+@keyframes sb-blob-b { to { transform: translate(-14rem, -6rem) scale(1.2); } }
+.sb-icon { position: absolute; left: var(--l); top: var(--t); font-size: var(--s); opacity: 0.75; filter: blur(2px); animation: sb-drift var(--du) ease-in-out var(--d) infinite; }
+@keyframes sb-drift { 0%, 100% { translate: 0 0; rotate: 0deg; } 50% { translate: 26px -48px; rotate: 16deg; } }
+.page-tickets .sb-icon { filter: blur(6px); opacity: 0.85; }
+.page-tickets .sb-blob { filter: blur(80px); }
+
+.page-tickets main button { display: block; width: 100%; max-width: 15rem; margin: 0.6rem auto; padding: 0.7rem 1rem; border: 0; border-radius: 999px; color: #fff; font-weight: 700; cursor: pointer; box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18); }
+.page-tickets main button:nth-of-type(1) { background: linear-gradient(135deg, #ef4444, #e11d2e); }
+.page-tickets main button:nth-of-type(2) { background: linear-gradient(135deg, #2563eb, #7c3aed); }
+.page-tickets main button:disabled { opacity: 0.6; cursor: default; }
+@media (prefers-reduced-motion: reduce) { .sb-blob, .sb-icon { animation: none; } }

@@ -1,3 +1,5 @@
+// Backend list of supported sports. Used to validate sport values on events.
+
 // The sports the system supports, grouped into categories. Add a sport here and in web/src/utils/sports.js.
 const SPORTS = Object.freeze({
   football: { label: 'Football', group: 'Team ball sports' },

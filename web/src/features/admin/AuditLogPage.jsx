@@ -1,8 +1,11 @@
+// Admin audit log: who did what and when (role changes, refunds, transfers, payments).
+
 import { collection, limit, orderBy, query } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 import { useLiveQuery } from '../../hooks/useLiveQuery';
 
 export default function AuditLogPage() {
+  // Live list of the 100 newest audit entries; it updates by itself when new entries arrive.
   const { docs: logs, loading, error } = useLiveQuery(
     () => query(collection(db, 'auditLogs'), orderBy('at', 'desc'), limit(100)), []);
   if (loading) return <main><p>Loading…</p></main>;

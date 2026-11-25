@@ -1,6 +1,11 @@
+// Confirms a payment and issues tickets. This is the most safety-critical code in the system:
+// it is idempotent, runs in one transaction, and turns every odd payment (late, duplicate,
+// wrong amount) into a refund record instead of losing money.
+
 const { FieldValue } = require('firebase-admin/firestore');
 const { DomainError } = require('../shared/errors');
 const { writeAudit } = require('../shared/audit');
+const { generateTicketNumber } = require('../tickets/ticketNumber');
 
 /** Records that money is owed back. The id comes from the gateway reference, so replays are harmless. */
 function recordRefundDue(tx, db, { providerRef, orderId, order, amountMinor, reason }) {
@@ -23,6 +28,7 @@ async function confirmPaymentCore(db, signer, { orderId, providerRef, amountMino
   return db.runTransaction(async (tx) => {
     const [orderSnap, handledSnap] = await Promise.all([tx.get(orderRef), tx.get(handledRef)]);
     if (!orderSnap.exists) throw new DomainError('not-found', 'Order not found.');
+    // A payment reference that was already processed (a retry or replay) does nothing the second time.
     if (handledSnap.exists) return { alreadyHandled: true };
 
     const order = orderSnap.data();
@@ -40,6 +46,7 @@ async function confirmPaymentCore(db, signer, { orderId, providerRef, amountMino
     if (order.status !== 'Pending') {
       throw new DomainError('failed-precondition', `Order is ${order.status}.`);
     }
+    // The amount actually paid must equal the order total; otherwise refund, never issue tickets.
     if (amountMinor !== order.totalMinor) {
       recordRefundDue(tx, db, { ...refundCtx, reason: 'Amount paid does not match the order total' });
       return { refundDue: true, mismatch: true };
@@ -51,6 +58,7 @@ async function confirmPaymentCore(db, signer, { orderId, providerRef, amountMino
     const seatSnaps = await tx.getAll(...seatRefs);
     const matchData = matchSnap.data();
 
+    // The seats must still be held by this order and the match still on sale.
     const holdIntact = matchData.status === 'OnSale' &&
       seatSnaps.every((s) => s.exists && s.data().heldByOrderId === orderId);
 
@@ -65,6 +73,8 @@ async function confirmPaymentCore(db, signer, { orderId, providerRef, amountMino
       return { failed: true, refundDue: true };
     }
 
+    // From here everything is written in this one transaction: seats sold, tickets issued,
+    // order paid and sales stats updated together, or not at all.
     const matchLabel = `${matchData.homeTeam} vs ${matchData.awayTeam}`;
     const priceBySeat = new Map(Object.entries(order.seatPrices ?? {}));
     const counts = new Map();
@@ -74,12 +84,16 @@ async function confirmPaymentCore(db, signer, { orderId, providerRef, amountMino
       const { category, label } = s.data();
       counts.set(category, (counts.get(category) ?? 0) + 1);
 
+      // One ticket per seat. The QR payload is HMAC-signed so it cannot be forged.
       const ticketRef = db.collection('tickets').doc();
+      // Human-readable number. The registry document makes a duplicate number fail the transaction.
+      const ticketNumber = generateTicketNumber();
+      tx.create(db.collection('ticketNumbers').doc(ticketNumber), { ticketId: ticketRef.id });
       tx.set(ticketRef, {
         orderId, userId: order.userId, matchId: order.matchId, matchLabel,
         kickoff: matchData.kickoff, sport: matchData.sport ?? null, seatId: s.id, seatLabel: label, category,
         priceMinor: priceBySeat.get(s.id) ?? null,
-        status: 'Valid', qrPayload: signer.sign(ticketRef.id, order.matchId),
+        status: 'Valid', ticketNumber, qrPayload: signer.sign(ticketRef.id, order.matchId),
         usedAt: null, usedGate: null, createdAt: FieldValue.serverTimestamp(),
       });
     });

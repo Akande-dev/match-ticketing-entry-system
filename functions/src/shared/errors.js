@@ -1,3 +1,5 @@
+// Business-rule errors that are safe to show to the user (for example 'seat already taken').
+
 class DomainError extends Error {
   constructor(code, message) {
     super(message);
@@ -5,6 +7,7 @@ class DomainError extends Error {
   }
 }
 
+// Converts a DomainError to the error type Firebase sends to the browser.
 function toHttpsError(err) {
   if (!(err instanceof DomainError)) return err;
   // Loaded lazily so pure logic and unit tests never need the Functions runtime.

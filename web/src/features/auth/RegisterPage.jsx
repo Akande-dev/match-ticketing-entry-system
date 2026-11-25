@@ -1,7 +1,10 @@
+// Registration page: creates a fan account. Admins can later change the role.
+
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
+// Friendly messages for the common sign-up errors.
 const ERRORS = {
   'auth/email-already-in-use': 'That email is already registered.',
   'auth/weak-password': 'Password must be at least 6 characters.',
@@ -15,6 +18,7 @@ export default function RegisterPage() {
   const [busy, setBusy] = useState(false);
   const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
 
+  // Creates the account, then goes to the home page.
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');

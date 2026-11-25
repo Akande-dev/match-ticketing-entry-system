@@ -1,3 +1,5 @@
+// Web app entry point: mounts React with the router and the login provider around the App.
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';

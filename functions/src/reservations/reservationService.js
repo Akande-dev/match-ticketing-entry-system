@@ -1,9 +1,13 @@
+// Seat holds and cancellations. Each runs in one Firestore transaction, which is how two buyers
+// are prevented from holding the same seat (no double sale).
+
 const { Timestamp, FieldValue } = require('firebase-admin/firestore');
 const { DomainError } = require('../shared/errors');
 const {
   HOLD_MINUTES, MAX_ACTIVE_HOLDS, validateRequest, findUnavailable, countActiveHolds, computeTotal,
 } = require('./reservationLogic');
 
+// Holds seats for 10 minutes and creates a Pending order. Returns the order id, total and expiry.
 async function holdSeatsCore(db, { uid, matchId, seatIds, now = new Date() }) {
   validateRequest({ matchId, seatIds });
   const matchRef = db.collection('matches').doc(matchId);
@@ -24,6 +28,7 @@ async function holdSeatsCore(db, { uid, matchId, seatIds, now = new Date() }) {
         'You already have open seat holds. Complete or cancel them first.');
     }
 
+    // Seat state is read inside the transaction, so a concurrent buyer is detected.
     const seatRefs = seatIds.map((id) => matchRef.collection('inventory').doc(id));
     const seatSnaps = await tx.getAll(...seatRefs);
     const seatDocs = seatSnaps.map((s) => ({ id: s.id, data: s.exists ? s.data() : undefined }));
@@ -37,6 +42,7 @@ async function holdSeatsCore(db, { uid, matchId, seatIds, now = new Date() }) {
     const prices = new Map(priceSnaps.filter((p) => p.exists).map((p) => [p.id, p.data().amountMinor]));
     const totalMinor = computeTotal(seatDocs, prices);
 
+    // If the buyer does not pay in time, the scheduled job frees these seats.
     const holdExpiresAt = Timestamp.fromMillis(now.getTime() + HOLD_MINUTES * 60 * 1000);
     seatRefs.forEach((ref) =>
       tx.update(ref, { status: 'Held', heldByOrderId: orderRef.id, holdExpiresAt }));

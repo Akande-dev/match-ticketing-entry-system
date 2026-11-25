@@ -1,3 +1,5 @@
+// Holds who is logged in and their role, and offers login, register and logout to every screen.
+
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import {
   createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile,
@@ -8,11 +10,14 @@ import { normaliseRole, ROLES } from './roles';
 
 const AuthContext = createContext(null);
 
+// Wrap the app in this so any component can call useAuth().
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(ROLES.FAN);
   const [loading, setLoading] = useState(true);
 
+  // Runs whenever the login state changes. The role comes from the login token (a custom claim);
+  // an unknown or missing role counts as 'fan'. The token is refreshed so new roles apply at login.
   useEffect(() => onAuthStateChanged(auth, async (u) => {
     if (u) {
       const token = await u.getIdTokenResult(true);
@@ -40,6 +45,7 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// Access to the current user, role and login functions. Must be used inside AuthProvider.
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used inside <AuthProvider>');

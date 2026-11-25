@@ -1,3 +1,8 @@
+// App shell: top navigation, page routes and footer. Each route is wrapped in a guard that
+// requires login (and, for staff pages, the right role). The guards are a convenience only;
+// real enforcement is in Firestore rules and Cloud Functions.
+
+import { useState } from 'react';
 import { Link, NavLink, Route, Routes } from 'react-router-dom';
 import { useAuth } from './features/auth/AuthContext';
 import ProtectedRoute from './features/auth/ProtectedRoute';
@@ -16,25 +21,36 @@ import MatchAdminPage from './features/manager/MatchAdminPage';
 import MatchFormPage from './features/manager/MatchFormPage';
 import RefundsPage from './features/manager/RefundsPage';
 import AuditLogPage from './features/admin/AuditLogPage';
+import SportBackground from './features/common/SportBackground';
+import AdminLayout from './features/admin/AdminLayout';
+import AdminOverviewPage from './features/admin/AdminOverviewPage';
+import UsersPage from './features/admin/UsersPage';
+import TicketLookup from './features/common/TicketLookup';
 
+// Role groups used by the guards and the navigation links.
 const STAFF = [ROLES.STEWARD, ROLES.ADMIN];
 const MANAGERS = [ROLES.MANAGER, ROLES.ADMIN];
+// Wraps a page in ProtectedRoute; 'allow' is an optional list of permitted roles.
 const guard = (el, allow) => <ProtectedRoute allow={allow}>{el}</ProtectedRoute>;
 
+// Top bar. Links shown depend on the role; the coloured bar under it also follows the role.
+// On narrow screens the links collapse behind a menu button.
 function NavBar() {
   const { user, role, logout } = useAuth();
+  const [open, setOpen] = useState(false);
   return (
     <>
       <div className="topbar"><b>Official tickets</b> · Instant QR entry · Refunds and ticket transfers · Football, basketball, volleyball, table tennis, boxing</div>
-      <nav className="site-nav">
+      <nav className={'site-nav role-' + role}>
         <div className="wrap">
           <Link to="/" className="brand">MATCH TICKETING<small>BUY. SCAN. ENTER.</small></Link>
-          <div className="nav-links">
-            <NavLink to="/" end>Events</NavLink>
+          <button type="button" className="nav-toggle" aria-label="Menu" aria-expanded={open} onClick={() => setOpen(!open)}>&#9776;</button>
+          <div className={'nav-links' + (open ? ' open' : '')} onClick={() => setOpen(false)}>
+            {user && <NavLink to="/" end>Events</NavLink>}
             {user && <NavLink to="/my-tickets">My tickets</NavLink>}
             {STAFF.includes(role) && <NavLink to="/scanner">Scanner</NavLink>}
             {MANAGERS.includes(role) && <NavLink to="/manager">Manager</NavLink>}
-            {role === ROLES.ADMIN && <NavLink to="/admin/audit">Audit log</NavLink>}
+            {role === ROLES.ADMIN && <NavLink to="/admin">Admin</NavLink>}
           </div>
           {user ? (
             <button type="button" className="btn btn-navy" onClick={logout}>Log out ({user.displayName ?? user.email}, {role})</button>
@@ -47,6 +63,7 @@ function NavBar() {
   );
 }
 
+// Site footer with quick links and a short how-it-works summary.
 function Footer() {
   const { user, role } = useAuth();
   return (
@@ -79,12 +96,14 @@ function Footer() {
   );
 }
 
+// All routes. Manager and admin areas use nested routes under a shared layout.
 export default function App() {
   return (
     <>
+      <SportBackground />
       <NavBar />
       <Routes>
-        <Route path="/" element={<MatchListPage />} />
+        <Route path="/" element={guard(<MatchListPage />)} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/matches/:matchId" element={guard(<MatchPage />)} />
@@ -99,7 +118,12 @@ export default function App() {
           <Route path="matches/:matchId/edit" element={<MatchFormPage />} />
           <Route path="refunds" element={<RefundsPage />} />
         </Route>
-        <Route path="/admin/audit" element={guard(<AuditLogPage />, [ROLES.ADMIN])} />
+        <Route path="/admin" element={guard(<AdminLayout />, [ROLES.ADMIN])}>
+          <Route index element={<AdminOverviewPage />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="tickets" element={<TicketLookup />} />
+          <Route path="audit" element={<AuditLogPage />} />
+        </Route>
       </Routes>
       <Footer />
     </>

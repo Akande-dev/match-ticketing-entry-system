@@ -1,3 +1,6 @@
+// Event lifecycle: save as Draft, publish (create seats and open sales), or cancel.
+// All writes are audited.
+
 const { Timestamp, FieldValue } = require('firebase-admin/firestore');
 const { DomainError } = require('../shared/errors');
 const { requireString } = require('../shared/validation');
@@ -5,6 +8,7 @@ const { writeAudit } = require('../shared/audit');
 const { commitInChunks } = require('../shared/batch');
 const { validateMatchInput } = require('./matchLogic');
 
+// Loads a venue's sections; a venue without sections cannot host an event.
 async function loadSections(db, stadiumId) {
   const snap = await db.collection('stadiums').doc(stadiumId).collection('sections').get();
   if (snap.empty) throw new DomainError('failed-precondition', 'That stadium has no sections.');
@@ -18,6 +22,7 @@ async function saveMatchCore(db, { uid, matchId, input, now = new Date() }) {
   const categories = [...new Set(sections.map((s) => s.data().category))];
   const data = validateMatchInput({ ...input, stadiumId }, { categories, nowMs: now.getTime() });
   const venueSnap = await db.collection('stadiums').doc(stadiumId).get();
+  // A venue is built for one sport, so the sport chosen must match it.
   const venueSport = venueSnap.data()?.sport;
   if (venueSport && venueSport !== data.sport) {
     throw new DomainError('failed-precondition', 'That venue is not set up for this sport.');
@@ -34,6 +39,7 @@ async function saveMatchCore(db, { uid, matchId, input, now = new Date() }) {
     }
   }
 
+  // Old prices are replaced with the new ones in the same batch as the event itself.
   const batch = db.batch();
   const oldPrices = await matchRef.collection('prices').get();
   oldPrices.docs.forEach((d) => batch.delete(d.ref));
@@ -68,6 +74,7 @@ async function publishMatchCore(db, { uid, matchId }) {
     throw new DomainError('failed-precondition', 'Every seat category needs a price.');
   }
 
+  // One inventory document per seat in the venue, copied from the stadium layout.
   const ops = [];
   for (const section of sections) {
     const { name, category } = section.data();
@@ -93,6 +100,7 @@ async function publishMatchCore(db, { uid, matchId }) {
   return { status: 'OnSale', seats: ops.length - 1 };
 }
 
+// Cancels a Draft or OnSale event inside a transaction.
 async function cancelMatchCore(db, { uid, matchId }) {
   const matchRef = db.collection('matches').doc(requireString(matchId, 'matchId', 100));
   await db.runTransaction(async (tx) => {

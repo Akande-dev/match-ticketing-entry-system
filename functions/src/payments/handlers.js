@@ -1,3 +1,6 @@
+// Cloud Function entry points for payments: start checkout, verify a payment,
+// receive the gateway webhook, and (development only) simulate a mock payment.
+
 const { onRequest } = require('firebase-functions/v2/https');
 const { logger } = require('firebase-functions');
 const { getFirestore } = require('firebase-admin/firestore');
@@ -9,14 +12,18 @@ const { createPaymentGateway } = require('.');
 const { confirmPaymentCore } = require('./paymentService');
 const { cancelOrderCore } = require('../reservations/reservationService');
 
+// Built on demand so the signing secret is read from the environment, never hard-coded.
 const signer = () => new TicketSigner(process.env.TICKET_HMAC_SECRET);
 
+// Loads an order only if it belongs to the caller. Other people's orders look 'not found',
+// so order ids cannot be probed.
 async function loadOwnOrder(db, auth, orderId) {
   const snap = await db.collection('orders').doc(requireString(orderId, 'orderId', 100)).get();
   if (!snap.exists || snap.data().userId !== auth.uid) throw new DomainError('not-found', 'Order not found.');
   return { ref: snap.ref, id: snap.id, order: snap.data() };
 }
 
+// Starts payment for a Pending order whose seat hold has not expired.
 exports.createCheckout = callable(null, async ({ auth, data, db }) => {
   const { ref, id, order } = await loadOwnOrder(db, auth, data.orderId);
   if (order.status !== 'Pending') throw new DomainError('failed-precondition', `Order is ${order.status}.`);
@@ -45,6 +52,7 @@ exports.verifyPayment = callable(null, async ({ auth, data, db }) => {
   return { status: (await ref.get()).data().status };
 }, { rateLimit: { action: 'verify', limit: 10, windowMs: 60_000 } });
 
+// Called by the payment provider. The signature is checked before anything in the request is trusted.
 exports.paymentWebhook = onRequest(async (req, res) => {
   if (req.method !== 'POST') return res.status(405).send('Method not allowed');
   const gateway = createPaymentGateway(process.env);
@@ -61,6 +69,7 @@ exports.paymentWebhook = onRequest(async (req, res) => {
     });
     return res.status(200).send('ok');
   } catch (err) {
+    // Business-rule failures will never succeed on retry; unexpected errors might.
     if (err instanceof DomainError) {
       logger.error('webhook_rejected', { orderId: event.orderId, code: err.code, message: err.message });
       return res.status(200).send('rejected'); // permanent error: retrying will not help

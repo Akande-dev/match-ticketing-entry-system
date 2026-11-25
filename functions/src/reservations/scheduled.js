@@ -1,3 +1,5 @@
+// Scheduled job: every 5 minutes, release holds that have expired.
+
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { logger } = require('firebase-functions');
 const { getFirestore } = require('firebase-admin/firestore');
