@@ -17,6 +17,7 @@ import MatchAdminPage from './features/manager/MatchAdminPage';
 import MatchFormPage from './features/manager/MatchFormPage';
 import RefundsPage from './features/manager/RefundsPage';
 import AuditLogPage from './features/admin/AuditLogPage';
+import SportBackground from './features/common/SportBackground';
 import AdminLayout from './features/admin/AdminLayout';
 import AdminOverviewPage from './features/admin/AdminOverviewPage';
 import UsersPage from './features/admin/UsersPage';
@@ -88,6 +89,7 @@ function Footer() {
 export default function App() {
   return (
     <>
+      <SportBackground />
       <NavBar />
       <Routes>
         <Route path="/" element={guard(<MatchListPage />)} />

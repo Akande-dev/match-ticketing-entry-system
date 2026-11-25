@@ -210,3 +210,21 @@ th, td { border-bottom: 1px solid var(--line); padding: 0.55rem; text-align: lef
 .demo-steward { background: #16a34a; }
 .demo-admin { background: #7c3aed; }
 @media (prefers-reduced-motion: reduce) { .auth-page, .floater { animation: none; } }
+
+/* ===== CR-11: moving blurred sport background and coloured ticket buttons ===== */
+.sport-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: linear-gradient(135deg, #dbeafe, #fce7f3 50%, #fef3c7); }
+.sb-blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; }
+.sb-blob-a { width: 26rem; height: 26rem; left: -6rem; top: -4rem; background: #3b82f6; animation: sb-blob-a 15s ease-in-out infinite alternate; }
+.sb-blob-b { width: 24rem; height: 24rem; right: -5rem; bottom: -6rem; background: #f43f5e; animation: sb-blob-b 18s ease-in-out infinite alternate; }
+@keyframes sb-blob-a { to { transform: translate(16rem, 8rem) scale(1.15); } }
+@keyframes sb-blob-b { to { transform: translate(-14rem, -6rem) scale(1.2); } }
+.sb-icon { position: absolute; left: var(--l); top: var(--t); font-size: var(--s); opacity: 0.75; filter: blur(2px); animation: sb-drift var(--du) ease-in-out var(--d) infinite; }
+@keyframes sb-drift { 0%, 100% { translate: 0 0; rotate: 0deg; } 50% { translate: 26px -48px; rotate: 16deg; } }
+.page-tickets .sb-icon { filter: blur(6px); opacity: 0.85; }
+.page-tickets .sb-blob { filter: blur(80px); }
+
+.page-tickets main button { display: block; width: 100%; max-width: 15rem; margin: 0.6rem auto; padding: 0.7rem 1rem; border: 0; border-radius: 999px; color: #fff; font-weight: 700; cursor: pointer; box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18); }
+.page-tickets main button:nth-of-type(1) { background: linear-gradient(135deg, #ef4444, #e11d2e); }
+.page-tickets main button:nth-of-type(2) { background: linear-gradient(135deg, #2563eb, #7c3aed); }
+.page-tickets main button:disabled { opacity: 0.6; cursor: default; }
+@media (prefers-reduced-motion: reduce) { .sb-blob, .sb-icon { animation: none; } }
