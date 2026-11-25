@@ -1,3 +1,5 @@
+// Emoji icons used across the pages, in one place.
+
 // Written as escapes so the emoji survive any editor or terminal.
 export const ICON = {
   ticket: '\u{1F39F}\uFE0F', lock: '\u{1F512}', phone: '\u{1F4F1}', check: '\u2705',

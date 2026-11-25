@@ -1,3 +1,6 @@
+// Connects the web app to Firebase. When VITE_USE_EMULATORS is true it uses the local emulators
+// instead of a real project (this is how the demo runs).
+
 import { initializeApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
@@ -14,6 +17,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const functions = getFunctions(app);
 
+// Local emulator addresses (authentication, database, functions).
 if (import.meta.env.VITE_USE_EMULATORS === 'true') {
   connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
   connectFirestoreEmulator(db, '127.0.0.1', 8080);

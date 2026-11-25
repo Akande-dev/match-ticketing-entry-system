@@ -1,6 +1,9 @@
+// One small function per Cloud Function, so screens never build function calls themselves.
+
 import { httpsCallable } from 'firebase/functions';
 import { functions } from './firebase';
 
+// Turns a function name into an async function that sends data and returns the result.
 const call = (name) => async (data) => (await httpsCallable(functions, name)(data)).data;
 
 export const holdSeats = call('holdSeats');

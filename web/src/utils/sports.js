@@ -1,3 +1,5 @@
+// Sport names, categories, emoji and the labels for each side of a fixture.
+
 // Keep in step with functions/src/shared/sports.js. Emoji are written as escapes so they survive any editor.
 export const SPORTS = {
   football: { label: 'Football', group: 'Team ball sports', emoji: '\u26BD', sides: ['Home team', 'Away team'] },

@@ -1,3 +1,7 @@
+// App shell: top navigation, page routes and footer. Each route is wrapped in a guard that
+// requires login (and, for staff pages, the right role). The guards are a convenience only;
+// real enforcement is in Firestore rules and Cloud Functions.
+
 import { useState } from 'react';
 import { Link, NavLink, Route, Routes } from 'react-router-dom';
 import { useAuth } from './features/auth/AuthContext';
@@ -22,10 +26,14 @@ import AdminLayout from './features/admin/AdminLayout';
 import AdminOverviewPage from './features/admin/AdminOverviewPage';
 import UsersPage from './features/admin/UsersPage';
 
+// Role groups used by the guards and the navigation links.
 const STAFF = [ROLES.STEWARD, ROLES.ADMIN];
 const MANAGERS = [ROLES.MANAGER, ROLES.ADMIN];
+// Wraps a page in ProtectedRoute; 'allow' is an optional list of permitted roles.
 const guard = (el, allow) => <ProtectedRoute allow={allow}>{el}</ProtectedRoute>;
 
+// Top bar. Links shown depend on the role; the coloured bar under it also follows the role.
+// On narrow screens the links collapse behind a menu button.
 function NavBar() {
   const { user, role, logout } = useAuth();
   const [open, setOpen] = useState(false);
@@ -54,6 +62,7 @@ function NavBar() {
   );
 }
 
+// Site footer with quick links and a short how-it-works summary.
 function Footer() {
   const { user, role } = useAuth();
   return (
@@ -86,6 +95,7 @@ function Footer() {
   );
 }
 
+// All routes. Manager and admin areas use nested routes under a shared layout.
 export default function App() {
   return (
     <>
