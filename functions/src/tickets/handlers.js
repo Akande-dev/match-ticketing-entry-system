@@ -42,3 +42,25 @@ const { findTicketByNumberCore } = require('./ticketLookup');
 exports.findTicketByNumber = callable(['steward', 'admin'],
   ({ data, db }) => findTicketByNumberCore(db, data.ticketNumber),
   { rateLimit: { action: 'ticketLookup', limit: 30, windowMs: 60_000 } });
+
+const { demoScanCore } = require('./demoScan');
+
+// Demo only: a sample scan through the real validator. Disabled unless ALLOW_MOCK_PAYMENTS=true.
+exports.demoScan = callable(['steward', 'admin'], async ({ auth, data, db }) => {
+  if (process.env.ALLOW_MOCK_PAYMENTS !== 'true') {
+    throw new DomainError('permission-denied', 'Demo scans are disabled.');
+  }
+  const { kind, matchId, gate } = data;
+  if (typeof matchId !== 'string' || !matchId || typeof gate !== 'string' || !gate || gate.length > 20) {
+    throw new DomainError('invalid-argument', 'matchId and gate are required.');
+  }
+  const validator = buildTicketValidator({ db, secret: process.env.TICKET_HMAC_SECRET });
+  const outcome = await demoScanCore(db, validator, { kind, matchId, gate, stewardId: auth.uid });
+  if (outcome.result === 'Valid') {
+    await db.collection('stats').doc(matchId).set({
+      attendance: FieldValue.increment(1),
+      attendanceByGate: { [gate]: FieldValue.increment(1) },
+    }, { merge: true });
+  }
+  return { ...outcome, firstUsedAt: toMillis(outcome.firstUsedAt) };
+}, { rateLimit: { action: 'demoScan', limit: 30, windowMs: 60_000 } });
