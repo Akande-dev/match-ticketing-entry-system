@@ -19,7 +19,6 @@ import AuditLogPage from './features/admin/AuditLogPage';
 import AdminLayout from './features/admin/AdminLayout';
 import AdminOverviewPage from './features/admin/AdminOverviewPage';
 import UsersPage from './features/admin/UsersPage';
-import DemoSwitcher from './features/auth/DemoSwitcher';
 
 const STAFF = [ROLES.STEWARD, ROLES.ADMIN];
 const MANAGERS = [ROLES.MANAGER, ROLES.ADMIN];
@@ -34,7 +33,7 @@ function NavBar() {
         <div className="wrap">
           <Link to="/" className="brand">MATCH TICKETING<small>BUY. SCAN. ENTER.</small></Link>
           <div className="nav-links">
-            <NavLink to="/" end>Events</NavLink>
+            {user && <NavLink to="/" end>Events</NavLink>}
             {user && <NavLink to="/my-tickets">My tickets</NavLink>}
             {STAFF.includes(role) && <NavLink to="/scanner">Scanner</NavLink>}
             {MANAGERS.includes(role) && <NavLink to="/manager">Manager</NavLink>}
@@ -86,10 +85,9 @@ function Footer() {
 export default function App() {
   return (
     <>
-      <DemoSwitcher />
       <NavBar />
       <Routes>
-        <Route path="/" element={<MatchListPage />} />
+        <Route path="/" element={guard(<MatchListPage />)} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/matches/:matchId" element={guard(<MatchPage />)} />

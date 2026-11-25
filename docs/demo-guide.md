@@ -15,7 +15,7 @@ Press Enter in the launcher window, or run `stop-demo.bat`.
 | steward@demo.com | steward | Scans tickets at the gate |
 | admin@demo.com | admin | All screens and the audit log |
 
-A demo bar at the top (Fan, Steward, Admin) signs in with these accounts in one click. For the transfer and no-double-sale steps, first register a second fan with the Register page using the email fan2@demo.com.
+The login page is the first page. In demo mode it lists these accounts as buttons that fill the form, and each role lands on its own area after login. For the transfer and no-double-sale steps, first register a second fan with the Register page using the email fan2@demo.com.
 
 ## Demo script (about 8 minutes)
 1. **Browse and buy (fan).** Log in as fan@demo.com. Open a match, pick two seats, Hold seats, Pay now, Simulate successful payment. Open My tickets and show the QR codes.

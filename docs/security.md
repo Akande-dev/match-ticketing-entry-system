@@ -55,3 +55,8 @@ Deployment: not done. The system runs on the local emulators. A Firebase test pr
 ## Demo role switcher (CR-06)
 The demo bar stores the emulator demo password in front-end code. It renders only when VITE_USE_EMULATORS is true, so it is for local emulator data only. It must not be used in a deployed system.
 
+
+
+## Login-first and demo account buttons (CR-07)
+The demo bar was removed. Every page except Log in and Register now requires login. The login page shows demo account buttons, with the emulator demo password in front-end code, only when VITE_USE_EMULATORS is true. This is for local emulator data only and must not be used in a deployed system. Route guards are a convenience; real enforcement stays in Firestore rules and Cloud Functions.
+
