@@ -1,3 +1,6 @@
+// Admin-only user management: change a role, enable or disable an account, list accounts.
+// Roles are stored as custom claims in the login token. Every change is written to the audit log.
+
 const { getAuth } = require('firebase-admin/auth');
 const { callable } = require('../shared/callable');
 const { auditEntry } = require('../shared/audit');
@@ -5,6 +8,7 @@ const { DomainError } = require('../shared/errors');
 const { requireString } = require('../shared/validation');
 const { validateRoleChange } = require('./roleLogic');
 
+// Changes a user's role. The new role takes effect the next time that user logs in.
 exports.setUserRole = callable(['admin'], async ({ auth, data, db }) => {
   validateRoleChange(data, auth.uid);
   await getAuth().setCustomUserClaims(data.uid, { role: data.role });
@@ -15,6 +19,7 @@ exports.setUserRole = callable(['admin'], async ({ auth, data, db }) => {
   return { ok: true };
 });
 
+// Disables or re-enables an account. Disabling also revokes sessions, so the user is signed out.
 exports.setUserDisabled = callable(['admin'], async ({ auth, data, db }) => {
   const uid = requireString(data.uid, 'uid', 128);
   if (uid === auth.uid) throw new DomainError('invalid-argument', 'You cannot disable your own account.');
@@ -29,8 +34,10 @@ exports.setUserDisabled = callable(['admin'], async ({ auth, data, db }) => {
   return { ok: true };
 });
 
+// Imported here (not at the top) because it was added with the admin portal change (CR-05).
 const { toUserSummary } = require('./userSummary');
 
+// Lists up to 200 accounts in a safe form (no password data).
 exports.listUsers = callable(['admin'], async () => {
   const res = await getAuth().listUsers(200);
   return { users: res.users.map(toUserSummary) };

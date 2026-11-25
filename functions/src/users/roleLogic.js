@@ -1,3 +1,5 @@
+// Rules for role changes. An admin cannot change their own role, so the system always keeps an admin.
+
 const { DomainError } = require('../shared/errors');
 
 const VALID_ROLES = ['fan', 'steward', 'manager', 'admin'];

@@ -1,3 +1,7 @@
+// Refund workflow. A fan requests a refund, then a manager approves or rejects it.
+// Approval cancels the ticket, frees the seat if it can be resold and updates the sales stats.
+// Paying the money back is a manual step: the system only records that it is owed.
+
 const { FieldValue } = require('firebase-admin/firestore');
 const { DomainError } = require('../shared/errors');
 const { requireString } = require('../shared/validation');
@@ -35,6 +39,8 @@ async function requestRefundCore(db, { uid, ticketId, reason, now = new Date() }
   });
 }
 
+// Manager decision on a requested refund. Runs in one transaction so ticket, seat, stats and
+// refund record always change together.
 async function decideRefundCore(db, { uid, ticketId, decision, note, now = new Date() }) {
   const id = requireString(ticketId, 'ticketId', 100);
   if (!['approve', 'reject'].includes(decision)) {
@@ -69,6 +75,7 @@ async function decideRefundCore(db, { uid, ticketId, decision, note, now = new D
 
     const match = matchSnap.data();
     const seat = seatSnap.data();
+    // The seat goes back on sale only if the event is still on sale, in the future, and the seat was sold by this order.
     const reusable = match.status === 'OnSale' && match.kickoff.toMillis() > now.getTime() &&
       seat?.status === 'Sold' && seat.heldByOrderId === ticket.orderId;
     if (reusable) {
