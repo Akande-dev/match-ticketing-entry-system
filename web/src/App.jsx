@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, NavLink, Route, Routes } from 'react-router-dom';
 import { useAuth } from './features/auth/AuthContext';
 import ProtectedRoute from './features/auth/ProtectedRoute';
@@ -26,13 +27,15 @@ const guard = (el, allow) => <ProtectedRoute allow={allow}>{el}</ProtectedRoute>
 
 function NavBar() {
   const { user, role, logout } = useAuth();
+  const [open, setOpen] = useState(false);
   return (
     <>
       <div className="topbar"><b>Official tickets</b> · Instant QR entry · Refunds and ticket transfers · Football, basketball, volleyball, table tennis, boxing</div>
-      <nav className="site-nav">
+      <nav className={'site-nav role-' + role}>
         <div className="wrap">
           <Link to="/" className="brand">MATCH TICKETING<small>BUY. SCAN. ENTER.</small></Link>
-          <div className="nav-links">
+          <button type="button" className="nav-toggle" aria-label="Menu" aria-expanded={open} onClick={() => setOpen(!open)}>&#9776;</button>
+          <div className={'nav-links' + (open ? ' open' : '')} onClick={() => setOpen(false)}>
             {user && <NavLink to="/" end>Events</NavLink>}
             {user && <NavLink to="/my-tickets">My tickets</NavLink>}
             {STAFF.includes(role) && <NavLink to="/scanner">Scanner</NavLink>}
