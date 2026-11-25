@@ -1,13 +1,18 @@
+// Shared helpers for the emulator integration tests.
+
 const { randomUUID } = require('crypto');
 const { Timestamp } = require('firebase-admin/firestore');
 const { holdSeatsCore } = require('../src/reservations/reservationService');
 const { confirmPaymentCore } = require('../src/payments/paymentService');
 const { TicketSigner } = require('../src/tickets/TicketSigner');
 
+// A fixed secret used only by tests; the real secret comes from the environment.
 const SECRET = 'test-secret-test-secret-test-secret';
 const signer = new TicketSigner(SECRET);
+// Random ids keep every test independent, so tests can be run repeatedly on the same emulator (DEF-009).
 const uniqueId = (prefix) => `${prefix}-${randomUUID().slice(0, 8)}`;
 
+// Creates an On sale match with one price category and 'seatCount' available seats.
 async function seedMatch(db, matchId, seatCount = 2) {
   const m = db.collection('matches').doc(matchId);
   await m.set({

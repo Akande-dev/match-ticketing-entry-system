@@ -1,3 +1,6 @@
+// Demo helper (emulator only): make an account an admin, or copy a ticket's QR text to the clipboard
+// so it can be pasted into the scanner's manual entry box.
+
 // Usage:
 //   node functions/scripts/user-tools.js admin   you@example.com   -> makes that account an admin
 //   node functions/scripts/user-tools.js ticket  you@example.com   -> copies the newest ticket's QR text
@@ -25,6 +28,7 @@ const [mode, email] = process.argv.slice(2);
     process.exit(1);
   }
 
+  // Admin mode: promote the account and remind the user to log in again.
   if (mode === 'admin') {
     await getAuth().setCustomUserClaims(user.uid, { role: 'admin' });
     await getFirestore().collection('users').doc(user.uid).set({ role: 'admin' }, { merge: true });
@@ -33,6 +37,7 @@ const [mode, email] = process.argv.slice(2);
     return;
   }
 
+  // Ticket mode: prefer a Valid ticket (so the scan demo works), otherwise the first one found.
   const snap = await getFirestore().collection('tickets').where('userId', '==', user.uid).get();
   if (snap.empty) {
     console.error('That account has no tickets yet. Buy one on the website first.');

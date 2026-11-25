@@ -1,3 +1,6 @@
+// Command-line tool to change one user's role. The role is stored as a custom claim in the login token,
+// so the user must log out and in again for it to apply.
+
 // Usage: npm run set-role -- <uid> <fan|steward|manager|admin>
 const remote = process.argv.includes('--remote');
 if (!remote) {
@@ -15,6 +18,7 @@ if (!uid || !['fan', 'steward', 'manager', 'admin'].includes(role)) {
   console.error('Usage: npm run set-role -- <uid> <fan|steward|manager|admin>');
   process.exit(1);
 }
+// Sets the claim in Authentication and mirrors it in the users collection.
 (async () => {
   await getAuth().setCustomUserClaims(uid, { role });
   await getFirestore().collection('users').doc(uid).set({ role }, { merge: true });

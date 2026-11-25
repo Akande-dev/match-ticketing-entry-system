@@ -1,3 +1,5 @@
+// Loads the demo stadiums, seats, events, prices and sales stats into Firestore (emulator by default).
+
 // Usage: npm run seed                      (emulator, default)
 //        node functions/scripts/seed.js --remote   (real project; needs credentials)
 const remote = process.argv.includes('--remote');
@@ -10,6 +12,7 @@ initializeApp({ projectId: process.env.GCLOUD_PROJECT || 'demo-mtses' });
 const db = getFirestore();
 
 // One venue per sport. Prices are in kobo (100 kobo = 1 naira). Seat categories are unique within a venue.
+// Seat sections are defined by rows x seats-per-row, and every seat is created from that.
 const VENUES = [
   { id: 'stadium-main', name: 'National Stadium', sport: 'football', sections: [
     { id: 'vip', name: 'VIP Stand', category: 'VIP', rows: 2, perRow: 5, price: 1500000 },
@@ -36,7 +39,8 @@ const VENUES = [
   ] },
 ];
 
-// Fictional teams and athletes. days = days from now, hour = start time.
+// Events. Football, basketball and volleyball use real club names (names only, no logos);
+// table tennis and boxing use fictional people. days = days from now, hour = start time.
 const MATCHES = [
   { id: 'match-001', venue: 'stadium-main', sport: 'football', home: 'Arsenal', away: 'Chelsea', days: 7, hour: 16 },
   { id: 'match-002', venue: 'stadium-main', sport: 'football', home: 'Real Madrid', away: 'Barcelona', days: 14, hour: 18 },
@@ -57,6 +61,7 @@ const MATCHES = [
   { id: 'match-403', venue: 'arena-boxing', sport: 'boxing', home: 'Steel Rivera', away: 'Crusher Dubois', days: 23, hour: 20 },
 ];
 
+// Start time: 'days' from today at 'hour' o'clock, as a Firestore timestamp.
 function startAt(days, hour) {
   const d = new Date();
   d.setDate(d.getDate() + days);
@@ -64,6 +69,7 @@ function startAt(days, hour) {
   return Timestamp.fromDate(d);
 }
 
+// Firestore batches hold at most 500 writes, so the many seat writes are sent in chunks of 450.
 async function commitInChunks(ops) {
   for (let i = 0; i < ops.length; i += 450) {
     const batch = db.batch();
@@ -72,6 +78,7 @@ async function commitInChunks(ops) {
   }
 }
 
+// Builds all write operations first, then commits them in chunks.
 (async () => {
   const ops = [];
   const venueById = new Map(VENUES.map((v) => [v.id, v]));
@@ -95,6 +102,7 @@ async function commitInChunks(ops) {
     ops.push((b) => b.set(venueRef, { name: v.name, city: 'Demo City', sport: v.sport, capacity }));
   }
 
+  // Events: each gets its stats, its prices and one inventory document per seat (all Available).
   for (const m of MATCHES) {
     const v = venueById.get(m.venue);
     const matchRef = db.collection('matches').doc(m.id);
