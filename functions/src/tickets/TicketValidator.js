@@ -1,3 +1,5 @@
+// Decides what happens when a QR code is scanned at the gate (Valid, AlreadyUsed, Invalid, ...).
+
 const { ScanResult } = require('./rules');
 
 /** Orchestrates a gate scan. Depends only on injected collaborators (SOLID: D, I, O). */
@@ -12,6 +14,7 @@ class TicketValidator {
 
   async validate(payload, ctx) {
     const outcome = await this._decide(payload, ctx);
+    // Every scan is logged, including rejected ones, for the audit trail.
     await this.scanLogs.record({
       ticketId: outcome.ticketId ?? null,
       matchId: ctx.matchId,
@@ -23,6 +26,7 @@ class TicketValidator {
     return outcome;
   }
 
+  // Order of checks: signature, ticket exists, rules, then the atomic mark-as-used.
   async _decide(payload, ctx) {
     const parsed = this.signer.verify(payload);
     if (!parsed) return { result: ScanResult.INVALID };

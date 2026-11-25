@@ -1,3 +1,5 @@
+// Base class (interface) for payment providers. Implementations: PaystackGateway, MockGateway.
+
 /**
  * Interface (documented contract). Every gateway implements:
  *   createCheckout(order) -> Promise<{ checkoutUrl, providerRef }>

@@ -1,9 +1,12 @@
+// Ticket transfer: the old ticket is retired and a new one is issued to the recipient.
+
 const { FieldValue } = require('firebase-admin/firestore');
 const { DomainError } = require('../shared/errors');
 const { requireString } = require('../shared/validation');
 const { writeAudit } = require('../shared/audit');
 const { checkTransferEligibility } = require('./transferLogic');
 
+// A simple shape check only; whether the account exists is checked against the users collection.
 const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 /**
@@ -38,6 +41,7 @@ async function transferTicketCore(db, signer, { uid, ticketId, recipientEmail, n
     });
     if (!verdict.ok) throw new DomainError('failed-precondition', verdict.reason);
 
+    // New id and new QR code, so the previous holder's QR stops working immediately.
     const newRef = db.collection('tickets').doc();
     tx.set(newRef, {
       ...ticket,

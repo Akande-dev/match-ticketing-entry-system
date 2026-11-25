@@ -1,3 +1,5 @@
+// Payment gateway factory (Factory pattern): chooses the real or mock gateway from configuration.
+
 const { MockGateway } = require('./MockGateway');
 const { PaystackGateway } = require('./PaystackGateway');
 

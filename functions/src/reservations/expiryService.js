@@ -1,3 +1,5 @@
+// Releases seats whose 10-minute hold ran out without payment.
+
 const { Timestamp } = require('firebase-admin/firestore');
 
 /**
@@ -25,6 +27,7 @@ async function expireOrderCore(db, { orderId, now = new Date() }) {
   });
 }
 
+// Sweep used by the scheduled job: finds overdue Pending orders and expires each one safely.
 async function releaseExpiredHoldsCore(db, { now = new Date(), limit = 200 } = {}) {
   const snap = await db.collection('orders')
     .where('status', '==', 'Pending')

@@ -1,9 +1,13 @@
+// Pure reservation rules (limits, availability, totals). No database access, so fully unit tested.
+
 const { DomainError } = require('../shared/errors');
 
+// Business limits that also protect against seat hoarding.
 const MAX_SEATS_PER_ORDER = 6;
 const MAX_ACTIVE_HOLDS = 2;
 const HOLD_MINUTES = 10;
 
+// Rejects a malformed request before any database work is done.
 function validateRequest({ matchId, seatIds }) {
   if (typeof matchId !== 'string' || !matchId) {
     throw new DomainError('invalid-argument', 'matchId is required.');
@@ -27,10 +31,12 @@ function isSeatAvailable(seat, nowMs) {
   return false;
 }
 
+// Returns the ids of the requested seats that cannot be taken.
 function findUnavailable(seatDocs, nowMs) {
   return seatDocs.filter((s) => !isSeatAvailable(s.data, nowMs)).map((s) => s.id);
 }
 
+// Counts a user's unexpired Pending orders.
 function countActiveHolds(orders, nowMs) {
   return orders.filter(
     (o) => o.status === 'Pending' && (o.holdExpiresAt?.toMillis?.() ?? 0) > nowMs,

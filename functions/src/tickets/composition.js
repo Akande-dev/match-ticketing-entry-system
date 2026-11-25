@@ -1,3 +1,5 @@
+// Composition root for gate scanning: the one place where concrete classes are wired together.
+
 const { TicketSigner } = require('./TicketSigner');
 const { TicketValidator } = require('./TicketValidator');
 const { MatchRule, StatusRule } = require('./rules');

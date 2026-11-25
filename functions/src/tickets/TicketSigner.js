@@ -1,3 +1,5 @@
+// Creates and checks the HMAC signature in each QR code, so a ticket cannot be forged or edited.
+
 const crypto = require('crypto');
 
 /** Signs and verifies QR payloads of the form ticketId.matchId.signature (HMAC-SHA256). */
@@ -7,6 +9,7 @@ class TicketSigner {
     this.secret = secret;
   }
 
+  // The signature covers both ids, so changing either one invalidates the code.
   _mac(ticketId, matchId) {
     return crypto.createHmac('sha256', this.secret).update(`${ticketId}.${matchId}`).digest('base64url');
   }
@@ -24,6 +27,7 @@ class TicketSigner {
 
     const ticketId = payload.slice(0, first);
     const matchId = payload.slice(first + 1, last);
+    // Constant-time comparison, so response timing does not leak the signature.
     const given = Buffer.from(payload.slice(last + 1));
     const expected = Buffer.from(this._mac(ticketId, matchId));
     if (given.length !== expected.length || !crypto.timingSafeEqual(given, expected)) return null;
