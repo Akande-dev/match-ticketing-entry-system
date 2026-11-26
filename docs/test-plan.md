@@ -43,7 +43,26 @@ Exit: all Must test cases executed; no open severity 1 or 2 defects; unit tests 
 | ST-09 | Filter the home page by sport | Counts add up to All (17) | Pass, 26 Nov 2026 (screenshots/st09-football-filter.png). Football 5 (screenshot); basketball, volleyball, table tennis and boxing 3 each (reported) |
 
 ## 6. Coverage
-Run `npm --prefix functions test -- --coverage` and paste the summary here. Handlers and screens are covered by system tests, not unit tests.
+Command: `npm --prefix functions test -- --coverage` (26 November 2026). 67 tests passed in 11 suites.
+
+| Measure | Result |
+|---|---|
+| Statements | 84.37% |
+| Branches | 80.21% |
+| Functions | 72.34% |
+| Lines | 85.04% |
+
+| Module | Statements | Note |
+|---|---|---|
+| tickets (signer, validator, rules, numbers, transfer logic) | 97.67% | Core gate and signing logic |
+| reservations (logic) | 96.77% | |
+| matches (logic) | 93.54% | |
+| refunds (logic) | 92.3% | |
+| payments | 69.81% | Gateway stubs and the Paystack error paths are not unit tested |
+| shared | 58.62% | errors.js and the Firestore part of rateLimit.js need the emulator |
+| users | 53.84% | roleLogic.js (own-role rule) has no unit test |
+
+What the figures mean: they cover only files that unit tests load. Services that use Firestore (payments, reservations, refunds, transfers, matches), all Cloud Function handlers and the web screens do not appear in this report. They are covered by the 26 integration tests and the manual system tests, not by this percentage.
 
 ## 7. Test environment
 | Item | Value |
