@@ -258,3 +258,22 @@ th, td { border-bottom: 1px solid var(--line); padding: 0.55rem; text-align: lef
 /* ===== CR-14: sport background on staff pages, with a readable panel ===== */
 .page-staff main { background: rgba(255, 255, 255, 0.88); border-radius: 20px; padding: 1.25rem 1.5rem; margin-top: 1rem; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); }
 .page-staff main main { background: none; box-shadow: none; padding: 0; margin: 0; }
+
+/* ===== CR-15: light scanner that matches the sport background ===== */
+.page-staff main:has(.scn) { background: none; box-shadow: none; padding: 0; }
+.scn { background: rgba(255, 255, 255, 0.55); backdrop-filter: blur(10px); color: #1e293b; border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 12px 30px rgba(59, 130, 246, 0.18); }
+.scn h1, .scn h2 { color: #1e3a8a; }
+.scn-head { border-bottom: 1px solid rgba(59, 130, 246, 0.25); background: linear-gradient(90deg, rgba(59, 130, 246, 0.18), rgba(244, 63, 94, 0.14)); border-radius: 14px; padding: 0.9rem 1rem; }
+.scn-head p { color: #475569; }
+.scn label { color: #334155; }
+.scn select, .scn input { background: rgba(255, 255, 255, 0.9); color: #0f172a; border: 1px solid #93c5fd; }
+.scn-panel { background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(147, 197, 253, 0.7); }
+.scn-reticle { border-color: #3b82f6; color: #1d4ed8; background: rgba(219, 234, 254, 0.5); }
+.scn-reticle small { color: #64748b; }
+.scn-btn { background: linear-gradient(135deg, #3b82f6, #7c3aed); }
+.scn-btn:disabled { opacity: 0.4; }
+.sim-green { background: #16a34a; } .sim-red { background: #dc2626; } .sim-amber { background: #d97706; } .sim-purple { background: #7c3aed; } .sim-blue { background: #2563eb; }
+.scn-note { color: #475569; }
+.scn-stats div { background: rgba(255, 255, 255, 0.85); border: 1px solid #dbeafe; }
+.scn-stats small { color: #475569; }
+.scn-stats b { color: #1d4ed8; } .scn-stats .g { color: #15803d; } .scn-stats .r { color: #dc2626; }
