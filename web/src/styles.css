@@ -254,3 +254,7 @@ th, td { border-bottom: 1px solid var(--line); padding: 0.55rem; text-align: lef
 .scn-result { margin-top: 1rem; border-radius: 16px; padding: 1rem 1.25rem; font-size: 1.1rem; color: #fff; }
 .scn-result.ok { background: #15803d; } .scn-result.warn { background: #b45309; } .scn-result.bad { background: #b91c1c; }
 .scn-result p { margin: 0.3rem 0 0; }
+
+/* ===== CR-14: sport background on staff pages, with a readable panel ===== */
+.page-staff main { background: rgba(255, 255, 255, 0.88); border-radius: 20px; padding: 1.25rem 1.5rem; margin-top: 1rem; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); }
+.page-staff main main { background: none; box-shadow: none; padding: 0; margin: 0; }
