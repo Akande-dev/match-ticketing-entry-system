@@ -9,6 +9,7 @@ import { requestRefund, transferTicket } from '../../services/api';
 import { useLiveQuery } from '../../hooks/useLiveQuery';
 import { useAuth } from '../auth/AuthContext';
 import { sportEmoji } from '../../utils/sports';
+import PendingOrders from './PendingOrders';
 
 // Text shown for each refund status.
 const REFUND_LABEL = { Requested: 'Refund requested', Approved: 'Refund approved', Rejected: 'Refund rejected' };
@@ -54,11 +55,13 @@ export default function MyTicketsPage() {
   }
 
   if (tickets.loading) return <main><p>Loading tickets…</p></main>;
-  if (!tickets.docs.length) return <main><p>You have no tickets yet.</p></main>;
+  // With no paid tickets the page still shows any unpaid holds, so payment can be resumed.
+  if (!tickets.docs.length) return <main><PendingOrders /><p>You have no tickets yet.</p></main>;
 
   return (
     <main>
       <h1>My tickets</h1>
+      <PendingOrders />
       {error && <p role="alert">{error}</p>}
       {notice && <p role="status">{notice}</p>}
       <ul className="cards">
