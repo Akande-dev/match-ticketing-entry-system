@@ -117,7 +117,7 @@ These later changes were requested by the project owner (the student) during dem
 | CR-10 | Centred, rounded login card with a moving sport background | v0.7.0 | Browser (manual) | [FILL IN] | [FILL IN] |
 | CR-11 | Moving blurred sport background on checkout, mock payment and My tickets; coloured transfer and refund buttons | v0.7.0 | Browser (manual) | [FILL IN] | [FILL IN] |
 | CR-12 | Redesigned gate scanner with demo sample scans (valid, already used, wrong match, tampered QR, cancelled). Samples run through the real validator and are disabled unless ALLOW_MOCK_PAYMENTS is true. Wrong gate and expired QR were not built: the system has no gate assignment and QR codes do not expire | v0.8.0 | IT-SCN-01..04 (26 integration tests passing, run twice), browser | [FILL IN] | [FILL IN] |
-| CR-13 | Pending payment card on My tickets: resume payment or cancel a hold, with a live countdown | v0.9.0 | Browser: resume payment within 10 minutes worked. Cancel hold and automatic card expiry not verified | [FILL IN] | [FILL IN] |
+| CR-13 | Pending payment card on My tickets: resume payment or cancel a hold, with a live countdown | v0.9.0 | Browser: resume payment within 10 minutes worked. Cancel hold also worked. Automatic card expiry after 10 minutes not verified | [FILL IN] | [FILL IN] |
 | CR-14 | Sport background and a readable panel on scanner, admin and manager pages | v0.10.0 | Browser (manual) | [FILL IN] | [FILL IN] |
 | CR-15 | Light scanner colours that match the background | v0.11.0 | Browser (manual) | [FILL IN] | [FILL IN] |
 

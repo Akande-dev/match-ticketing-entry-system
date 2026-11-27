@@ -5,7 +5,7 @@
 |---|---|---|---|
 | Unit | Pure logic: signing, validation rules, seat logic, match and refund rules, rate limit, gateways | Jest | 67 tests passing (11 suites) |
 | Integration | Real Firestore emulator: concurrency, payments, refunds, gate scans | Jest + emulator | 26 tests passing (4 suites), repeatable on one emulator |
-| System | Full flows in the browser | Manual scripts below | Done for ST-01 to ST-09 (CR-13 Cancel hold not verified) |
+| System | Full flows in the browser | Manual scripts below | Done for ST-01 to ST-09 (CR-13 automatic card expiry not verified) |
 | Security | Rules and role checks | Manual and code review | See security.md |
 
 ## 2. Risk-based priorities
@@ -122,7 +122,7 @@ Everything below ran on local emulators only. Nothing is deployed, and the Payst
 | CR-09 | Searchable ticket numbers for stewards and admins | Integration tests and browser |
 | CR-10, CR-11, CR-14 | Login card and sport backgrounds on fan and staff pages | Browser (manual) |
 | CR-12, CR-15 | Redesigned scanner with sample scans, light colours | Integration tests (IT-SCN) and browser |
-| CR-13 | Pending payment card to resume or cancel a hold | Browser: resume payment within 10 minutes worked. Cancel hold and automatic expiry of the card: not verified |
+| CR-13 | Pending payment card to resume or cancel a hold | Browser: resume payment within 10 minutes worked. Cancel hold also worked. Automatic disappearance of the card after 10 minutes: not verified |
 
 ### 11.3 Limits to state in the report
 - Browser checks were manual and not repeated by a second person.
