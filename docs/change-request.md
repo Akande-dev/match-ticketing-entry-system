@@ -69,12 +69,6 @@ Implemented on branch feature/CR-02-multi-sport and merged with tag v0.4.0.
 - Actual effort: [FILL IN hours].
 - Defects found: [FILL IN, or none].
 
-## Closure note (CR-02)
-Implemented on branch feature/CR-02-multi-sport and merged with tag v0.4.0.
-- Tests: validation tests extended and new sports-list tests (UT-SPORT-01, 02); system test ST-09 (sport filters) passed on 26 November 2026.
-- Actual effort: [FILL IN hours].
-- Defects found: [FILL IN, or none].
-
 
 ---
 
@@ -105,35 +99,6 @@ Implemented on branch feature/CR-03-home-redesign and merged with tag v0.5.0.
 - Checked by: production build and a visual walkthrough with screenshots. No logic changed.
 - Actual effort: [FILL IN hours].
 - Defects found: [FILL IN, or none].
-
-## Closure note (CR-03)
-Implemented on branch feature/CR-03-home-redesign and merged with tag v0.5.0.
-- Checked by: production build and a visual walkthrough with screenshots. No logic changed.
-- Actual effort: [FILL IN hours].
-- Defects found: [FILL IN, or none].
-
-
----
-
-# Change requests CR-04 to CR-15 (25 to 26 November 2026)
-These later changes were requested by the project owner (the student) during demo preparation. All ran on local emulators only. Effort and defect figures are left for the author to fill in.
-
-| ID | Change | Tag | Checked by | Effort | Defects |
-|---|---|---|---|---|---|
-| CR-04 | Real international club names and 17 seeded events (names only, no logos). Table tennis and boxing keep fictional names | v0.6.0 | Unit tests, build, browser (All 17, football 5) | [FILL IN] | [FILL IN] |
-| CR-05 | Admin console: overview, users page (change role, disable and enable), audit log. New admin-only listUsers function. Admins cannot change or disable their own account | v0.7.0 | 4 new unit tests (62 total), browser | [FILL IN] | [FILL IN] |
-| CR-06 | Demo role switcher bar. Manager and friend demo accounts removed (admin does manager tasks in the demo; the transfer test needs a second account you register) | v0.7.0 | Build, browser. The bar was later removed by CR-07 | [FILL IN] | [FILL IN] |
-| CR-07 | Login page first; every page except Log in and Register needs login; each role lands on its own area; demo account buttons on the login page (emulator mode only) | v0.7.0 | Browser: logins worked for fan, steward and admin | [FILL IN] | [FILL IN] |
-| CR-08 | Responsive layout, mobile menu, role colour bar, animated hero background | v0.7.0 | Browser (manual) | [FILL IN] | [FILL IN] |
-| CR-09 | Searchable ticket numbers (TKT-XXXXXXXX). Stewards and admins can look a ticket up by number; the lookup never admits a ticket and never returns the QR or the owner. A transferred ticket gets a new number | v0.7.0 | 5 unit tests, IT-TKN-01..03 (22 integration tests passing), browser | [FILL IN] | [FILL IN] |
-| CR-10 | Centred, rounded login card with a moving sport background | v0.7.0 | Browser (manual) | [FILL IN] | [FILL IN] |
-| CR-11 | Moving blurred sport background on checkout, mock payment and My tickets; coloured transfer and refund buttons | v0.7.0 | Browser (manual) | [FILL IN] | [FILL IN] |
-| CR-12 | Redesigned gate scanner with demo sample scans (valid, already used, wrong match, tampered QR, cancelled). Samples run through the real validator and are disabled unless ALLOW_MOCK_PAYMENTS is true. Wrong gate and expired QR were not built: the system has no gate assignment and QR codes do not expire | v0.8.0 | IT-SCN-01..04 (26 integration tests passing, run twice), browser | [FILL IN] | [FILL IN] |
-| CR-13 | Pending payment card on My tickets: resume payment or cancel a hold, with a live countdown | v0.9.0 | Browser: resume payment within 10 minutes worked. Cancel hold and automatic card expiry not verified | [FILL IN] | [FILL IN] |
-| CR-14 | Sport background and a readable panel on scanner, admin and manager pages | v0.10.0 | Browser (manual) | [FILL IN] | [FILL IN] |
-| CR-15 | Light scanner colours that match the background | v0.11.0 | Browser (manual) | [FILL IN] | [FILL IN] |
-
-Known limits: browser checks were manual, by one person. Camera scanning was not recorded. Nothing is deployed and the Paystack sandbox was not tested.
 
 
 ---
